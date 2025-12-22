@@ -26,5 +26,5 @@ for i in range(0,105):
 	os.system("sleep 0.1")
 
 	#submit a bsub job that runs the nnsearch python script
-	print("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/runn_nnsearch_hpc.py " + chunk_str + " " +  target_molecule_file + " " + working_location + " \"")
-	os.system("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/runn_nnsearch_hpc.py " + chunk_str + " " +  target_molecule_file + " " + working_location + " \"")
+	print("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/shapedb/run_nnsearch_hpc.py " + chunk_str + " " +  target_molecule_file + " " + working_location + " \"")
+	os.system("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/shapedb/run_nnsearch_hpc.py " + chunk_str + " " +  target_molecule_file + " " + working_location + " \"")
