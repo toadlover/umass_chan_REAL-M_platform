@@ -43,6 +43,7 @@ for i in range (0,10):
 	os.system("tar -xzf /pi/summer.thyme-umw/enamine-REAL-2.6billion/" + superchunk_str + "/" + working_chunk + "/condensed_params_and_db_" + str(i) + ".tar.gz -C .")
 
 	#run shapedb out of the container on the subchunk database, executed via singularity
+	print("singularity exec --bind condensed_params_and_db_" + str(i) + "/db.db --bind " + target_molecule_file + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/shapedb_container.sif /pharmit/src/build/shapedb -NNSearch -k 100000 -ligand " + target_molecule_file + " -db condensed_params_and_db_" + str(i) + "/db.db -print > " + working_chunk + "_" + str(i) + "_nn.txt")
 	os.system("singularity exec --bind condensed_params_and_db_" + str(i) + "/db.db --bind " + target_molecule_file + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/shapedb_container.sif /pharmit/src/build/shapedb -NNSearch -k 100000 -ligand " + target_molecule_file + " -db condensed_params_and_db_" + str(i) + "/db.db -print > " + working_chunk + "_" + str(i) + "_nn.txt")
 
 	#run through the shapedb list and remove any ligands on the blacklist
