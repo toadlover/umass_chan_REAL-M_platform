@@ -37,6 +37,8 @@ os.chdir(working_location)
 #make a directory to perform the analysis in, based on the superchunk name
 os.system("mkdir -p " + superchunk_str)
 os.chdir(superchunk_str)
+#clobber any existing workign chunk
+os.system("rm -drf " + working_chunk)
 os.system("mkdir -p " + working_chunk)
 os.chdir(working_chunk)
 
