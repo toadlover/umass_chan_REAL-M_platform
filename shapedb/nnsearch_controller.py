@@ -14,7 +14,7 @@ if len(sys.argv) > 2:
 
 #iterate over every chunk, and call the search script on each subchunk within the chunk
 #for i in range(0,53085):
-for i in range(0,1000):
+for i in range(0,105):
 	#build the chunk string
 	chunk_str = str(i)
 
@@ -26,4 +26,5 @@ for i in range(0,1000):
 	os.system("sleep 0.1")
 
 	#submit a bsub job that runs the nnsearch python script
+	print("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/runn_nnsearch_hpc.py " + chunk_str + " " +  target_molecule_file + " " + working_location + " \"")
 	os.system("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/runn_nnsearch_hpc.py " + chunk_str + " " +  target_molecule_file + " " + working_location + " \"")
