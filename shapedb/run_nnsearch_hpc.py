@@ -24,6 +24,8 @@ superchunk_str = str(superchunk_str)
 #get the target shape molecule (Can have a path to it, must be mol2 or sdf, or shapedb likely won't be able to read it)
 target_molecule_file = sys.argv[2]
 
+target_molecule_name = target_molecule_file.split("/")[len(target_molecule_file.split("/")) - 1]
+
 #create the result output in a specified location, or use location where this was called from otherwise
 working_location = "."
 if len(sys.argv) > 3:
@@ -43,8 +45,8 @@ for i in range (0,10):
 	os.system("tar -xzf /pi/summer.thyme-umw/enamine-REAL-2.6billion/" + superchunk_str + "/" + working_chunk + "/condensed_params_and_db_" + str(i) + ".tar.gz -C .")
 
 	#run shapedb out of the container on the subchunk database, executed via singularity
-	print("singularity exec --bind condensed_params_and_db_" + str(i) + "/db.db --bind " + target_molecule_file + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/shapedb_container.sif /pharmit/src/build/shapedb -NNSearch -k 100000 -ligand " + target_molecule_file + " -db condensed_params_and_db_" + str(i) + "/db.db -print > " + working_chunk + "_" + str(i) + "_nn.txt")
-	os.system("singularity exec --bind condensed_params_and_db_" + str(i) + "/db.db --bind " + target_molecule_file + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/shapedb_container.sif /pharmit/src/build/shapedb -NNSearch -k 100000 -ligand " + target_molecule_file + " -db condensed_params_and_db_" + str(i) + "/db.db -print > " + working_chunk + "_" + str(i) + "_nn.txt")
+	print("singularity exec --bind condensed_params_and_db_" + str(i) + "/db.db:/input/db.db --bind " + target_molecule_file + ":/input/" + target_molecule_name + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/shapedb_container.sif /pharmit/src/build/shapedb -NNSearch -k 100000 -ligand /input/" + target_molecule_name + " -db /input/db.db -print > " + working_chunk + "_" + str(i) + "_nn.txt")
+	os.system("singularity exec --bind condensed_params_and_db_" + str(i) + "/db.db:/input/db.db --bind " + target_molecule_file + ":/input/" + target_molecule_name + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/shapedb_container.sif /pharmit/src/build/shapedb -NNSearch -k 100000 -ligand /input/" + target_molecule_name + " -db /input/db.db -print > " + working_chunk + "_" + str(i) + "_nn.txt")
 
 	#run through the shapedb list and remove any ligands on the blacklist
 	#TODO
