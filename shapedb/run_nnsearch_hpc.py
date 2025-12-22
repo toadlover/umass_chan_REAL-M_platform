@@ -50,6 +50,28 @@ for i in range (0,10):
 
 	#run through the shapedb list and remove any ligands on the blacklist
 	#TODO
+	#create a write stream for the filered file
+	filtered_file = open(working_chunk + "_" + str(i) + "_nn_filtered.txt", "w")
+
+	#create read streams for the initial nn file and the blacklist
+	initial_file = open(working_chunk + "_" + str(i) + "_nn.txt", "r")
+	blacklist_file = open("/pi/summer.thyme-umw/enamine-REAL-2.6billion/" + superchunk_str + "/" + working_chunk + "/blacklist_file.csv" , "r")
+
+	#port the blacklist file ligands to a list
+	blacklist_ligands = []
+	for line in blacklist_file.readlines():
+		if line.startswith("ligand,") == False:
+			blacklist_ligands.append(line.split(",")[0])
+
+	#iterate over the initial file, and write lines to the filtered file if the ligand is not on the blacklist
+	for line in initial_file.readlines():
+		#derive the ligand in the initial file
+		cur_lig = line.split("_")[0]
+
+		#add if the ligand is not in the blacklist
+		if cur_lig not in blacklist_ligands:
+			filtered_file.write(line)
+
 
 	#delete the decompressed folder
 	os.system("rm -drf condensed_params_and_db_" + str(i))
