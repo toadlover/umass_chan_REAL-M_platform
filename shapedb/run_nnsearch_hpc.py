@@ -77,6 +77,8 @@ for i in range (0,10):
 		if cur_lig not in blacklist_ligands:
 			filtered_file.write(line)
 
+	#delete the unfiltered file
+	os.system("rm " + working_chunk + "_" + str(i) + "_nn.txt")
 
 	#delete the decompressed folder
 	os.system("rm -drf condensed_params_and_db_" + str(i))
