@@ -61,7 +61,12 @@ for i in range (0,10):
 	blacklist_ligands = []
 	for line in blacklist_file.readlines():
 		if line.startswith("ligand,") == False:
-			blacklist_ligands.append(line.split(",")[0])
+			#to greatly improve speed and not waste time on competing subchunks, only take ligands from the subchunk
+			#derive the subchunk, which is right before the ".sdf" anbd after the last underscore after that split
+			subchunk = line.split(".sdf")[0].split("_")[len(line.split(".sdf")[0].split("_")) - 1]
+
+			if str(i) == str(subchunk):
+				blacklist_ligands.append(line.split(",")[0])
 
 	#iterate over the initial file, and write lines to the filtered file if the ligand is not on the blacklist
 	for line in initial_file.readlines():
