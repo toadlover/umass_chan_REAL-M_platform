@@ -14,7 +14,7 @@ if len(sys.argv) > 2:
 
 #iterate over every chunk, and call the search script on each subchunk within the chunk
 #for i in range(0,53085):
-for i in range(0,105):
+for i in range(0,1500):
 	#build the chunk string
 	chunk_str = str(i)
 
