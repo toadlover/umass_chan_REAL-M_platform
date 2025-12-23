@@ -20,7 +20,7 @@ shapedb_data_location = sys.argv[3]
 
 #sanitize path to end with a / if it doesn't already
 if shapedb_data_location.endswith("/") == False:
-	shapedb_data_location = shapedb_data_location + "False"
+	shapedb_data_location = shapedb_data_location + "/"
 
 #define the min and max chunks to look at
 #i.e. 0 -> 0, 10 -> 1000, 530 -> 53,000
