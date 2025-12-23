@@ -36,7 +36,7 @@ for i in range(0,53085):
 	job_count = 0
 	with open("bjobs_length.txt") as f:
 		job_count = int(f.read().strip())
-	while job_count > 500:
+	while job_count > 1500:
 		#sleep for 1 second to not overburden the system
 		os.system("sleep 1")
 		os.system("bjobs | wc -l > bjobs_length.txt")
