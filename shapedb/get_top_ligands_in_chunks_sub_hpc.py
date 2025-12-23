@@ -104,7 +104,8 @@ for i in range(min_chunk,max_chunk + 1):
 
 	#even smarter approach, only heapify at the end of the file after adding everything from the file into the list, and then pop off the lowest if we are beyond the max (and don't even heapify if we are below the max)
 	#even more smart, only do this step when completing a chunk, not upon completion of each subchunk
-	if len(conformer_list) > max_ligands_to_keep:
+	#if len(conformer_list) > max_ligands_to_keep:
+	if len(conformer_list) > (max_ligands_to_keep * 2):
 		conformer_heap = conformer_list
 
 		print("Heapifying list after end of current chunk, " + str(chunk_str))
