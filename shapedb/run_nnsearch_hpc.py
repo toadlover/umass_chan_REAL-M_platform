@@ -44,11 +44,11 @@ os.chdir(working_chunk)
 
 #iteratively decompress the params and db data to the working chunk location
 for i in range (0,10):
-	os.system("tar -xzf /pi/summer.thyme-umw/enamine-REAL-2.6billion/" + superchunk_str + "/" + working_chunk + "/condensed_params_and_db_" + str(i) + ".tar.gz -C .")
+	os.system("tar -xzf /pi/summer.thyme-umw/enamine-REAL-2.6billion/" + superchunk_str + "/" + working_chunk + "/condensed_params_and_db_" + str(i) + ".tar.gz condensed_params_and_db_" + str(i) + "/db.db -C .")
 
 	#run shapedb out of the container on the subchunk database, executed via singularity
-	print("singularity exec --bind condensed_params_and_db_" + str(i) + "/db.db:/input/db.db --bind " + target_molecule_file + ":/input/" + target_molecule_name + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/shapedb_container.sif /pharmit/src/build/shapedb -NNSearch -k 100000 -ligand /input/" + target_molecule_name + " -db /input/db.db -print > " + working_chunk + "_" + str(i) + "_nn.txt")
-	os.system("singularity exec --bind condensed_params_and_db_" + str(i) + "/db.db:/input/db.db --bind " + target_molecule_file + ":/input/" + target_molecule_name + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/shapedb_container.sif /pharmit/src/build/shapedb -NNSearch -k 100000 -ligand /input/" + target_molecule_name + " -db /input/db.db -print > " + working_chunk + "_" + str(i) + "_nn.txt")
+	print("singularity exec --bind db.db:/input/db.db --bind " + target_molecule_file + ":/input/" + target_molecule_name + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/shapedb_container.sif /pharmit/src/build/shapedb -NNSearch -k 100000 -ligand /input/" + target_molecule_name + " -db /input/db.db -print > " + working_chunk + "_" + str(i) + "_nn.txt")
+	os.system("singularity exec --bind db.db:/input/db.db --bind " + target_molecule_file + ":/input/" + target_molecule_name + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/shapedb_container.sif /pharmit/src/build/shapedb -NNSearch -k 100000 -ligand /input/" + target_molecule_name + " -db /input/db.db -print > " + working_chunk + "_" + str(i) + "_nn.txt")
 
 	#run through the shapedb list and remove any ligands on the blacklist
 	#TODO
@@ -83,6 +83,6 @@ for i in range (0,10):
 	os.system("rm " + working_chunk + "_" + str(i) + "_nn.txt")
 
 	#delete the decompressed folder
-	os.system("rm -drf condensed_params_and_db_" + str(i))
+	os.system("rm -drf db.db")
 
 
