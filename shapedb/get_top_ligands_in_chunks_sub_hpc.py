@@ -81,9 +81,9 @@ for i in range(min_chunk,max_chunk + 1):
 		#open the text file to read
 		try:
 			#read_file = open(chunk_str + "_" + subchunk_str + "_scored_confs_against_" + file_prefix + ".txt" , "r")
-			read_file = open(shapedb_data_location + superchunk_str + "/" + chunk_str + "_" + subchunk_str + "_nn_filtered.txt" , "r")
+			read_file = open(shapedb_data_location + superchunk_str + "/" + chunk_str + "/" + chunk_str + "_" + subchunk_str + "_nn_filtered.txt" , "r")
 		except:
-			print(shapedb_data_location + superchunk_str + "/" + chunk_str + "_" + subchunk_str + "_nn_filtered.txt is missing")
+			print(shapedb_data_location + superchunk_str + "/" + chunk_str + "/" + chunk_str + "_" + subchunk_str + "_nn_filtered.txt is missing")
 			continue
 
 		#read through the file
