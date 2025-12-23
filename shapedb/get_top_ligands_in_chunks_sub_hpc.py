@@ -39,7 +39,11 @@ conformer_list = []
 
 #value to hold the currently smallest value of the conformer list so that we don't have to keep calling it every time we want it if the value has not changed
 #default to -2, because the value should never get that low
-smallest_value = -2
+#smallest_value = -2
+
+#create empty heap
+conformer_heap = []
+
 
 #i.e. 0 will have the range 0-99, 1 is 100-199, 10 is 1000-1099, 530 is 53,000-53,099 (this will be specifically cut to 53084 since that is the max)
 #make strings for the min and max chunk
@@ -61,6 +65,7 @@ for i in range(min_chunk,max_chunk + 1):
 
 	#construct a 5 digit string to access chunks (lead with zeroes)
 	chunk_str = str(i)
+	print("On chunk " + str(chunk_str))
 
 	while len(chunk_str) < 5:
 		chunk_str = "0" + chunk_str
@@ -98,10 +103,25 @@ for i in range(min_chunk,max_chunk + 1):
 			conf_name = str(line.split()[0])
 
 			#add entry to the heap 
-			conformer_list.append([conf_score, conf_name , chunk_str, subchunk_str])
+			#conformer_list.append([conf_score, conf_name , chunk_str, subchunk_str])
+
+			#create entry tuple
+			entry = (conf_score, conf_name, chunk_str, subchunk_str)
+
+			#keep adding entries until we are at the max to keep
+			if len(conformer_heap) < max_ligands_to_keep:
+			    conformer_heap.append(entry)
+			    #once at the max, heapify
+			    if len(conformer_heap) == max_ligands_to_keep:
+			        heapq.heapify(conformer_heap)
+			else:
+			    # heap[0] is the worst (smallest) score we are currently keeping
+			    if conf_score > conformer_heap[0][0]:
+			        heapq.heapreplace(conformer_heap, entry)
+
 		#close the file
 		read_file.close()
-
+	"""
 	#even smarter approach, only heapify at the end of the file after adding everything from the file into the list, and then pop off the lowest if we are beyond the max (and don't even heapify if we are below the max)
 	#even more smart, only do this step when completing a chunk, not upon completion of each subchunk
 	#if len(conformer_list) > max_ligands_to_keep:
@@ -117,6 +137,10 @@ for i in range(min_chunk,max_chunk + 1):
 		#pop off until the length is at the max
 		#while len(conformer_heap) > max_ligands_to_keep:
 		#	heapq.heappop()
+	"""
+
+#write to conformer_list and sort
+conformer_list = sorted(conformer_heap, reverse=True)
 
 #write the best ligands to a file with accession information to a new file
 
