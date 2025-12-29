@@ -14,7 +14,7 @@ if shapedb_data_location.endswith("/") == False:
 	shapedb_data_location = shapedb_data_location + "/"
 
 #run over the whole library from 0 to 53084
-min_chunk = 53080
+min_chunk = 0
 max_chunk = 53085
 
 #create the heap
