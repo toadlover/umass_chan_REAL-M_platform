@@ -63,6 +63,9 @@ for line in master_list_file.readlines():
 		#close the write stream
 		write_file.close()
 
+		#reset the small confs list
+		small_confs_list = []
+
 		#fire off a job to process the concluding batch
 		#os.system("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/shapedb/run_nnsearch_hpc.py " + chunk_str + " " +  target_molecule_file + " " + working_location + " \"")
 		os.system("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/discovery_test_params_preparation/prepare_test_params_directories_sub.py\"")
@@ -111,4 +114,4 @@ for line in master_list_file.readlines():
 write_file.close()
 
 #submit the final job
-os.system("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/discovery_test_params_preparation/prepare_test_params_directories_sub.py")
+os.system("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/discovery_test_params_preparation/prepare_test_params_directories_sub.py\"")
