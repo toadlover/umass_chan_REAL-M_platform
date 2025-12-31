@@ -45,7 +45,7 @@ write_file = open("conf_list.csv", "w")
 
 #read through the master list, collect conformers, and make test_params directories every 100 encountered (or when at the end)
 master_list_file = open(master_list,"r")
-for line in master_list_file():
+for line in master_list_file.readlines():
 	#extract the ligand with conformer to ensure it is not in the working small_confs list
 	ligconf = line.split(",")[1]
 	#continue to avoid repeating, although this should generally be impossible. having the same ligand in the same call to rosetta twice could break things
