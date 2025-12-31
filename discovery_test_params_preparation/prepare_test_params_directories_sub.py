@@ -74,9 +74,16 @@ for line in confs_file.readlines():
 	os.system("tar -xzf /pi/summer.thyme-umw/enamine-REAL-2.6billion/" + superchunk_str + "/" + chunk + "/condensed_params_and_db_" + subchunk + ".tar.gz single_conf_params/" + ligname + "_shorthand_params.txt --strip-components=2 -C .")
 
 	#extract and clean the conformer params from the shorthand file
-	os.system("python extract_single_param_from_condensed_file")
+	os.system("python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/discovery_test_params_preparation/extract_single_param_from_condensed_file.py " + ligname + "_shorthand_params.txt " + conf_num + " " + ligname + "_" + conf_num)
+
+	#clean the spacing
+	os.system("python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/discovery_test_params_preparation/fix_condensed_param_file_spacing.py " + ligname + "_" + conf_num + ".params")
+
+	#overwrite the fixed file over the bad spacing file
+	os.system("mv fixed_" + ligname + "_" + conf_num + ".params " + ligname + "_" + conf_num + ".params")
 
 	#delete the shorthand params files from the working location
-	#os.system("rm *_shorthand_params.txt")
+	os.system("rm *_shorthand_params.txt")
 
 	#write the ligand and conformer params file to the residue_types file
+	res_types_file.write(ligname + "_" + conf_num + ".params\n")
