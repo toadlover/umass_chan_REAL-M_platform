@@ -20,6 +20,9 @@
 import os,sys
 
 #no arguments needed since this is intended to operate in a preset directory
+#clobber an existing test_params directory if there is one
+os.system("rm -drf test_params")
+
 #make initial test_params directory preparations
 os.system("mkdir -p test_params")
 
@@ -71,7 +74,7 @@ for line in confs_file.readlines():
 	print(ligname + " " + conf_num)
 
 	#extract the working file to the current location
-	os.system("tar -xzf /pi/summer.thyme-umw/enamine-REAL-2.6billion/" + superchunk_str + "/" + chunk + "/condensed_params_and_db_" + subchunk + ".tar.gz single_conf_params/" + ligname + "_shorthand_params.txt --strip-components=2 -C .")
+	os.system("tar -xzf /pi/summer.thyme-umw/enamine-REAL-2.6billion/" + superchunk_str + "/" + chunk + "/condensed_params_and_db_" + subchunk + ".tar.gz condensed_params_and_db_" + subchunk + "/single_conf_params/" + ligname + "_shorthand_params.txt --strip-components=2 -C .")
 
 	#extract and clean the conformer params from the shorthand file
 	os.system("python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/discovery_test_params_preparation/extract_single_param_from_condensed_file.py " + ligname + "_shorthand_params.txt " + conf_num + " " + ligname + "_" + conf_num)
