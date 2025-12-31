@@ -65,7 +65,7 @@ for line in master_list_file.readlines():
 
 		#fire off a job to process the concluding batch
 		#os.system("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/shapedb/run_nnsearch_hpc.py " + chunk_str + " " +  target_molecule_file + " " + working_location + " \"")
-		os.system("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/discovery_test_params_preparation/prepare_test_params_directories_sub.py")
+		os.system("bsub -q long -W 8:00 -u \"\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/discovery_test_params_preparation/prepare_test_params_directories_sub.py\"")
 
 		#throttle progress if there are too many job in queue
 		#bsub job throttle to make sure we do not exceed our local limit
