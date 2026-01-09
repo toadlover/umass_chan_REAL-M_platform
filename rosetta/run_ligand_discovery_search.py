@@ -15,6 +15,8 @@
 #Rosetta will be called to run in the location where this script is called
 
 #example command
+#python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search.py /pi/summer.thyme-umw/rosetta_discovery_space/pth2/thymelab_pth2_discovery/pth2_structures/7F16_receptor_only.pdb 63,87,96,179 /pi/summer.thyme-umw/enamine-REAL-2.6billion/FINAL_motifs_list_filtered_2_3_2023.motifs /pi/summer.thyme-umw/rosetta_discovery_space/pth2/shapedb_results/top_hits/upper/upper_res29_34_shifted/test/test_params/ -2 150 -9 /pi/summer.thyme-umw/rosetta_discovery_space/pth2/shapedb_results/top_hits/upper/upper_res29_34_shifted/test/extra_args
+#which calls the container like
 #singularity exec --bind test_params:/input/test_params --bind test_args:/input/test_args --bind /pi/summer.thyme-umw/rosetta_discovery_space/pth2/thymelab_pth2_discovery/pth2_structures/7F16_receptor_only.pdb:/input/7F16_receptor_only.pdb --bind /pi/summer.thyme-umw/2024_intern_lab_space/FINAL_motifs_list_filtered_2_3_2023.motifs:/input/FINAL_motifs_list_filtered_2_3_2023.motifs /pi/summer.thyme-umw/2024_intern_lab_space/ari_work/containers/rosetta_condensed_6_25_2024.sif /rosetta/source/bin/ligand_discovery_search_protocol.linuxgccrelease @/input/test_args
 
 #imports
@@ -94,3 +96,8 @@ args_file.close()
 
 #we now have the args file written, now call Rosetta discovery
 os.system("singularity exec --bind " + test_params_dir + ":" + input_test_params_dir + " --bind " + os.getcwd() + "/args:/input/args --bind " + target_pdb + ":" + input_target_pdb + " --bind " + motifs_file + ":" + input_motifs_file + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/rosetta_condensed_6_25_2024.sif /rosetta/source/bin/ligand_discovery_search_protocol.linuxgccrelease @/input/args")
+
+#now, call the placement analysis script
+os.system("python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/score_placed_ligands_with_filtering.py")
+
+#then, compress the placement files (this will move all pdb files to a directory called placements, so do not keep any important pdbs in here)
