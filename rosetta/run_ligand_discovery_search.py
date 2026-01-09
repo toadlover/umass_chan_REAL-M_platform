@@ -97,7 +97,19 @@ args_file.close()
 #we now have the args file written, now call Rosetta discovery
 os.system("singularity exec --bind " + test_params_dir + ":" + input_test_params_dir + " --bind " + os.getcwd() + "/args:/input/args --bind " + target_pdb + ":" + input_target_pdb + " --bind " + motifs_file + ":" + input_motifs_file + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/rosetta_condensed_6_25_2024.sif /rosetta/source/bin/ligand_discovery_search_protocol.linuxgccrelease @/input/args")
 
+#move all pdb files to a placements directory
+os.system("mkdir placements")
+
+os.system("mv *pdb placements")
+
+os.chdir("placements")
+
 #now, call the placement analysis script
 os.system("python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/score_placed_ligands_with_filtering.py")
 
 #then, compress the placement files (this will move all pdb files to a directory called placements, so do not keep any important pdbs in here)
+os.chdir("..")
+
+os.system("tar -czf placements.tar.gz placements")
+
+os.system("rm -drf placements")
