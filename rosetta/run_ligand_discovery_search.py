@@ -93,4 +93,4 @@ if extra_args_file != "":
 args_file.close()
 
 #we now have the args file written, now call Rosetta discovery
-os.system("singularity exec --bind " + test_params_dir + ":" + input_test_params_dir + " --bind args:/input/test_args --bind " + target_pdb + ":" + input_target_pdb + " --bind " + motifs_file + ":" + input_motifs_file + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/rosetta_condensed_6_25_2024.sif /rosetta/source/bin/ligand_discovery_search_protocol.linuxgccrelease @/input/args")
+os.system("singularity exec --bind " + test_params_dir + ":" + input_test_params_dir + " --bind " + os.getcwd() + "/args:/input/test_args --bind " + target_pdb + ":" + input_target_pdb + " --bind " + motifs_file + ":" + input_motifs_file + " /pi/summer.thyme-umw/enamine-REAL-2.6billion/rosetta_condensed_6_25_2024.sif /rosetta/source/bin/ligand_discovery_search_protocol.linuxgccrelease @/input/args")
