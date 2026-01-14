@@ -64,7 +64,9 @@ for r,d,f in os.walk(discovery_directory_root):
 
 				#prepare to run discovery on test params for this residue
 				#start the command
-				cmd = "bsub -q long -W 168:00 -o output -e error -R \"rusage[mem=8000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search.py "
+				#cmd = "bsub -q long -W 168:00 -u \"\" -o output -e error -R \"rusage[mem=8000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search.py "
+				#removing the output and error std out
+				cmd = "bsub -q long -W 168:00 -u \"\" -R \"rusage[mem=8000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search.py "
 				#target pdb
 				cmd = cmd + target_pdb + " "
 				#anchor residue
