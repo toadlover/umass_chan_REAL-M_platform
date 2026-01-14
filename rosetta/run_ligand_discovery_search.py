@@ -2,7 +2,7 @@
 #This is meant to run a single call of liganddiscoverysearch and be called by a controller script that controls calling larger batches of the discovery search
 #mandatory inputs include:
 #1. target pdb
-#2. an anchor residue  string of all positions to be used as anchors, which is comma separated if there is more than 1 (i.e. 79 for 1 or 11,79,55,403 for multiple); this residue needs to use rosetta indexing, which needs to be determined before running the pipeline
+#2. an anchor residue  string of all positions to be used as anchors, which is comma separated if there is more than 1 (i.e. 79 for 1 or 11,79,55,403 for multiple); this residue needs to use rosetta indexing, which needs to be determined before running the pipeline; this program itself if called by the controller will only use a single anchor residue in the call
 #3. a motifs file (by default, will use the main 1.6M motif library, but if another is specified, will be used instead)
 #4. location to a test_params folder containing ligands of interest to be docked
 
@@ -104,8 +104,17 @@ os.system("mv *pdb placements")
 
 os.chdir("placements")
 
+#rename each pdb file by prepending the anchor residue string used by this script
+for r,d,f in os.walk(os.getcwd()):
+	for file in f:
+		if file.endswith(".pdb") and r == os.getcwd():
+			os.system("mv " + file + " res" + anchor_residue_string + "_" + file)
+
 #now, call the placement analysis script
 os.system("python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/score_placed_ligands_with_filtering.py")
+
+#copy the csv files up a level for easy accession outside of the to-be compressed placements directory
+os.system("cp *csv ..")
 
 #then, compress the placement files (this will move all pdb files to a directory called placements, so do not keep any important pdbs in here)
 os.chdir("..")
