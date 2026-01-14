@@ -56,6 +56,9 @@ for r,d,f in os.walk(discovery_directory_root):
 				#go to the root
 				os.chdir(tp_root)
 
+				#clobber the existing directory for a fresh run
+				os.system("rm -drf " + str(residue))
+
 				#make a directory for the anchor residue
 				os.system("mkdir -p " + str(residue))
 
