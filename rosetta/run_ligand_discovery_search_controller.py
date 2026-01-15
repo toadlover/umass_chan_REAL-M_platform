@@ -69,7 +69,7 @@ for r,d,f in os.walk(discovery_directory_root):
 				#start the command
 				#cmd = "bsub -q long -W 168:00 -u \"\" -o output -e error -R \"rusage[mem=8000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search.py "
 				#removing the output and error std out
-				cmd = "bsub -q long -W 168:00 -u \"\" -R \"rusage[mem=8000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search.py "
+				cmd = "bsub -q long -W 168:00 -u \"\" -R \"rusage[mem=10000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search.py "
 				#target pdb
 				cmd = cmd + target_pdb + " "
 				#anchor residue
@@ -88,14 +88,14 @@ for r,d,f in os.walk(discovery_directory_root):
 				print(cmd)
 				os.system(cmd)
 
-				#add a throttle at 1500 parallel jobs to avoid overflowing the system
+				#add a throttle at 1600 parallel jobs to avoid overflowing the system (1600 so extra jobs can be queued outside of the 1500 allowed to run)
 				#bsub job throttle to make sure we do not exceed our local limit
 				#write the length of the bjobs queue to this current location
 				os.system("bjobs | wc -l > bjobs_length.txt")
 				job_count = 0
 				with open("bjobs_length.txt") as f:
 					job_count = int(f.read().strip())
-				while job_count > 1500:
+				while job_count > 1600:
 					#sleep for 1 second to not overburden the system
 					os.system("sleep 1")
 					os.system("bjobs | wc -l > bjobs_length.txt")
