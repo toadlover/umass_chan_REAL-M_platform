@@ -65,11 +65,60 @@ for r,d,f in os.walk(discovery_directory_root):
 				#enter the directory
 				os.chdir(str(residue))
 
+				#determine whether to send the next job to the long or large queue, based on the number of jobs running in each queue
+				#if there are under 1600 long jobs, send to long
+				#else if there are under 900 large jobs, send to large
+				#otherwise if both buffered queues are running and full, throttle until space opens up
+
+				#initialize
+				queue = "long"
+
+				#add a throttle at 1600 parallel jobs to avoid overflowing the system (1600 so extra jobs can be queued outside of the 1500 allowed to run)
+				#bsub job throttle to make sure we do not exceed our local limit
+				#write the length of the bjobs queue to this current location
+				os.system("bjobs | awk '{print $4}' | grep long | wc -l > bjobs_long_length.txt")
+				os.system("bjobs | awk '{print $4}' | grep large | wc -l > bjobs_large_length.txt")
+				long_job_count = 0
+				large_job_count = 0
+				with open("bjobs_long_length.txt") as f:
+					long_job_count = int(f.read().strip())
+				with open("bjobs_large_length.txt") as f:
+					large_job_count = int(f.read().strip())
+
+				#queue assignment
+				if long_job_count < 1600:
+					queue = "long"
+
+				if long_job_count > 1600 and large_job_count < 900:
+					queue = "large"
+
+
+				#hit the throttle if both queues are stuffed
+				while long_job_count > 1600 and large_job_count > 900:
+					#sleep for 1 second to not overburden the system
+					os.system("bjobs | awk '{print $4}' | grep long | wc -l > bjobs_long_length.txt")
+					os.system("bjobs | awk '{print $4}' | grep large | wc -l > bjobs_large_length.txt")
+					long_job_count = 0
+					large_job_count = 0
+					with open("bjobs_long_length.txt") as f:
+						long_job_count = int(f.read().strip())
+					with open("bjobs_large_length.txt") as f:
+						large_job_count = int(f.read().strip())
+
+					#queue assignment
+					if long_job_count < 1600:
+						queue = "long"
+
+					if long_job_count > 1600 and large_job_count < 900:
+						queue = "large"
+				#remove the length file to avoid clutter
+				os.system("rm bjobs_long_length.txt bjobs_large_length.txt")				
+
 				#prepare to run discovery on test params for this residue
 				#start the command
 				#cmd = "bsub -q long -W 168:00 -u \"\" -o output -e error -R \"rusage[mem=8000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search.py "
 				#removing the output and error std out
-				cmd = "bsub -q long -W 168:00 -u \"\" -R \"rusage[mem=10000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search.py "
+				cmd = "bsub -q " + queue + " -W 96:00 -u \"\" -R \"rusage[mem=10000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search.py "
 				#target pdb
 				cmd = cmd + target_pdb + " "
 				#anchor residue
@@ -88,19 +137,5 @@ for r,d,f in os.walk(discovery_directory_root):
 				print(cmd)
 				os.system(cmd)
 
-				#add a throttle at 1600 parallel jobs to avoid overflowing the system (1600 so extra jobs can be queued outside of the 1500 allowed to run)
-				#bsub job throttle to make sure we do not exceed our local limit
-				#write the length of the bjobs queue to this current location
-				os.system("bjobs | wc -l > bjobs_length.txt")
-				job_count = 0
-				with open("bjobs_length.txt") as f:
-					job_count = int(f.read().strip())
-				while job_count > 1600:
-					#sleep for 1 second to not overburden the system
-					os.system("sleep 1")
-					os.system("bjobs | wc -l > bjobs_length.txt")
-					with open("bjobs_length.txt") as f:
-						job_count = int(f.read().strip())
-				#remove the length file to avoid clutter
-				os.system("rm bjobs_length.txt")				
+				
 
