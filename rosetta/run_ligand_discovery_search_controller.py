@@ -71,7 +71,7 @@ for r,d,f in os.walk(discovery_directory_root):
 				#otherwise if both buffered queues are running and full, throttle until space opens up
 
 				#initialize
-				queue = "long"
+				queue = "None"
 
 				#add a throttle at 1600 parallel jobs to avoid overflowing the system (1600 so extra jobs can be queued outside of the 1500 allowed to run)
 				#bsub job throttle to make sure we do not exceed our local limit
@@ -94,7 +94,7 @@ for r,d,f in os.walk(discovery_directory_root):
 
 
 				#hit the throttle if both queues are stuffed
-				while long_job_count > 1600 and large_job_count > 900:
+				while long_job_count > 1600 and large_job_count > 900 and queue == "None":
 					#sleep for 1 second to not overburden the system
 					os.system("bjobs | awk '{print $4}' | grep long | wc -l > bjobs_long_length.txt")
 					os.system("bjobs | awk '{print $4}' | grep large | wc -l > bjobs_large_length.txt")
