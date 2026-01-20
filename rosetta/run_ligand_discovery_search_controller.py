@@ -94,8 +94,9 @@ for r,d,f in os.walk(discovery_directory_root):
 
 
 				#hit the throttle if both queues are stuffed
-				while long_job_count > 1600 and large_job_count > 900 and queue == "None":
-					#sleep for 1 second to not overburden the system
+				#while long_job_count > 1600 and large_job_count > 900 and queue == "None":
+				while True:
+					
 					os.system("bjobs | awk '{print $4}' | grep long | wc -l > bjobs_long_length.txt")
 					os.system("bjobs | awk '{print $4}' | grep large | wc -l > bjobs_large_length.txt")
 					long_job_count = 0
@@ -108,9 +109,15 @@ for r,d,f in os.walk(discovery_directory_root):
 					#queue assignment
 					if long_job_count < 1600:
 						queue = "long"
+						break
 
-					if long_job_count > 1600 and large_job_count < 900:
+					elif large_job_count < 900:
 						queue = "large"
+						break
+
+					#sleep for 1 second to not overburden the system
+					os.system("sleep 1")
+
 				#remove the length file to avoid clutter
 				os.system("rm bjobs_long_length.txt bjobs_large_length.txt")				
 
