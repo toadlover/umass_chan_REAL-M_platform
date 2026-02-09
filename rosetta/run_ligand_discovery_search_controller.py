@@ -70,7 +70,7 @@ for r,d,f in os.walk(discovery_directory_root):
 							if file2 == "placements.tar.gz":
 								has_placements_tar = True
 							if file2 == "raw_scores.csv":
-								has_placements_tar = True
+								has_raw_scores = True
 
 					#if the directory has both, do not clobber and simply continue
 					if has_placements_tar and has_raw_scores:
