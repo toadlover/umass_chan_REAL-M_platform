@@ -37,10 +37,14 @@ atr = sys.argv[5]
 rep = sys.argv[6]
 ddg = sys.argv[7]
 
+#determine whether to clobber existing COMPLETE discovery directories (set as binary 1-true and do clobber or 0-false and do not clobber)
+#complete is defined by a directory having a compressed placements directory (placements.tar.gz) and raw scores directory (raw_scores.csv)
+clobber = int(sys.argv[8])
+
 #if there is an extra args file, take it in, so we can pass it down to all discovery jobs
 extra_args_file = ""
-if len(sys.argv) >= 9:
-	extra_args_file = sys.argv[8]
+if len(sys.argv) >= 10:
+	extra_args_file = sys.argv[9]
 
 #look over the discovery directory root to identify test_params directories
 for r,d,f in os.walk(discovery_directory_root):
@@ -55,6 +59,23 @@ for r,d,f in os.walk(discovery_directory_root):
 			for residue in anchor_residue_string_list:
 				#go to the root
 				os.chdir(tp_root)
+
+				#determine whether there was a completed run that we do not want to clobber and avoid it
+				if clobber == 0:
+					#check the directory for if there is a placements.tar.gz file and a raw_scores.csv file. if there are both, do not clobber and simply continue
+					has_placements_tar = False
+					has_raw_scores = False
+					for r2,d2,f2 in os.walk(tp_root + "/" + str(residue)):
+						for file2 in f2:
+							if file2 == "placements.tar.gz":
+								has_placements_tar = True
+							if file2 == "raw_scores.csv":
+								has_placements_tar = True
+
+					#if the directory has both, do not clobber and simply continue
+					if has_placements_tar and has_raw_scores:
+						continue
+
 
 				#clobber the existing directory for a fresh run
 				os.system("rm -drf " + str(residue))
