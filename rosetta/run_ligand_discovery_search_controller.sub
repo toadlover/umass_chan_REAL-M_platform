@@ -30,6 +30,9 @@ atr_cutoff=-2
 rep_cutoff=150
 ddg_cutoff=-9
 
+#clobber completed directories (1 = do clobber no matter what, 0 = do not clobber directories that are complete; good for if you have to rerun if the controller script broke at any point)
+clobber=0
+
 #[OPTIONAL, but recommended] path to file containing extra arguments for discovery for filters like the space fill analysis and real motif analysis, which are more complex groups of varaibles that should be custom filled out
 extra_args_file=/pi/summer.thyme-umw/rosetta_discovery_space/pth2/shapedb_results/top_hits/upper/upper_res29_34_shifted/extra_args
 
@@ -40,6 +43,6 @@ extra_args_file=/pi/summer.thyme-umw/rosetta_discovery_space/pth2/shapedb_result
 echo "Starting Rosetta discovery controller job at $(date)"
 
 #operate the controller script to run shapedb for the target shape against all conformers in each subchunk with one job per chunk
-python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search_controller.py $target_pdb $anchor_residue_string $motifs_file $discovery_directory_root $atr_cutoff $rep_cutoff $ddg_cutoff $extra_args_file
+python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/run_ligand_discovery_search_controller.py $target_pdb $anchor_residue_string $motifs_file $discovery_directory_root $atr_cutoff $rep_cutoff $ddg_cutoff $clobber $extra_args_file
 
 echo "All Rosetta discovery jobs submitted. Finished at $(date)"
