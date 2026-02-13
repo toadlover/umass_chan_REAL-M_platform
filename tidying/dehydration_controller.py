@@ -40,14 +40,14 @@ for r,d,f in os.walk(cleaner_root):
 					print(cmd)
 					os.system(cmd)
 
-					#adding 500 job throttle
+					#adding 10 job throttle
 					#bsub job throttle to make sure we do not exceed our local limit
 					#write the length of the bjobs queue to this current location
 					os.system("bjobs | grep short |  wc -l > bjobs_length.txt")
 					job_count = 0
 					with open("bjobs_length.txt") as f:
 						job_count = int(f.read().strip())
-					while job_count > 1500:
+					while job_count > 10:
 						#sleep for 1 second to not overburden the system
 						os.system("sleep 1")
 						os.system("bjobs | grep short| wc -l > bjobs_length.txt")
