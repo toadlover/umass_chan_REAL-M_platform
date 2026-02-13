@@ -211,6 +211,7 @@ for r,d,f in os.walk(placements_location):
 					res_to_keep.append(res)
 					continue
 
+				
 				#look for residues within 5 angstroms to keep
 				for res_atom in prot_res[res]:
 					#extract the residue atom coordinates
@@ -231,6 +232,7 @@ for r,d,f in os.walk(placements_location):
 					#if we added the residue to the res_to_keep, break here to move to the next residue
 					if res in res_to_keep:
 						break
+
 			
 
 			#finally, go back over the buffered file, and when ew get to ATOM lines, determine whether or not to keep the residue based on if the residue is in the res_to_keep
