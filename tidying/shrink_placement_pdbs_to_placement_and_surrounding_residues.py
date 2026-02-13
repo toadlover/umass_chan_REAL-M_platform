@@ -179,7 +179,7 @@ for r,d,f in os.walk(placements_location):
 					res_com[2] = res_com[2] + float(res_atom.split()[8])
 					nheavy_atoms = nheavy_atoms + 1
 
-					if residue_code != "":
+					if residue_code == "":
 						residue_code = res_atom.split()[3]
 
 				#divide the residue com sums by the number of atoms to get a usable average
