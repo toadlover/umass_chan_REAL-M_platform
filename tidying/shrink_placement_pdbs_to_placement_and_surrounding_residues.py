@@ -122,6 +122,10 @@ for r,d,f in os.walk(placements_location):
 				os.system("rm -drf " + file)
 				continue
 
+			#skip a skeleton if one exists
+			if file == "skeleton.pdb":
+				continue
+
 			#otherwise, delete the corresponding folder with the file's namesake first
 			file_base = file.split(".pdb")[0]
 
