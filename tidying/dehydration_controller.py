@@ -26,11 +26,13 @@ for r,d,f in os.walk(cleaner_root):
 					#try to fire off a lsf job to run the dehydrator
 					cmd = "bsub -q short -W 1:00 -u \"\" -R \"rusage[mem=5000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/tidying/shrink_placement_pdbs_to_placement_and_surrounding_residues.py "
 
+					#reference pdb
+					cmd = cmd + reference_pdb + " "
+
 					#root location where the complete placements file is
 					cmd = cmd + cleaner_root + " "
 
-					#reference pdb
-					cmd = cmd + reference_pdb + " "
+
 
 					#cap off
 					cmd = cmd + "\""
