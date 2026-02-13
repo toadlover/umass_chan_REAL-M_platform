@@ -72,6 +72,8 @@ for line in ref_file.readlines():
 for r,d,f in os.walk(placements_location):
 	for file in f:
 		if r == placements_location and file != "skeleton.pdb" and file.endswith(".pdb"):
+			print(file)
+
 			#pull its data the same as we did the skeleton
 
 			read_file = open(file, "r")
@@ -119,7 +121,7 @@ for r,d,f in os.walk(placements_location):
 
 						#write all of the residue atoms from the placement
 						for placement_line in ref_res_atoms:
-							temp_file.write(ref_line)
+							temp_file.write(placement_line)
 
 						#reset last_index_spliced to be the current index
 						last_index_spliced = int(cur_pair[0])
@@ -147,10 +149,10 @@ for r,d,f in os.walk(placements_location):
 
 					#write all of the residue atoms from the placement
 					for placement_line in ref_res_atoms:
-						temp_file.write(ref_line)
+						temp_file.write(placement_line)
 
 					#reset last_index_spliced to be the current index
-					last_index_spliced = int(cur_pair[0])
+					#last_index_spliced = int(cur_pair[0])
 
 					ref_res_atoms = []
 
