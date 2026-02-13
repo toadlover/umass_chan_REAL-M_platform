@@ -4,7 +4,7 @@
 #for the purpose of pipeline cleanup, this will look for a file named placements.tar.gz, unpack the tar, make reduced versions of the placements, and then recompress them
 #will also remove extraneous folders from the folder
 
-imports os,sys
+import os,sys
 #import pymol2
 
 working_location = os.getcwd()
