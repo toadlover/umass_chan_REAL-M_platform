@@ -47,7 +47,7 @@ for r,d,f in os.walk(cleaner_root):
 					job_count = 0
 					with open("bjobs_length.txt") as f:
 						job_count = int(f.read().strip())
-					while job_count > 10:
+					while job_count > 30:
 						#sleep for 1 second to not overburden the system
 						os.system("sleep 1")
 						os.system("bjobs | grep short| wc -l > bjobs_length.txt")
