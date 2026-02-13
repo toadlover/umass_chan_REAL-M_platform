@@ -10,38 +10,53 @@ os.chdir("placements")
 placements_location = os.getcwd()
 
 
-def parse_protein_residue_blocks(pdb_path):
+def resid_key_from_atom_line(line: str):
+    """
+    Robust PDB fixed-width parsing:
+      resname: cols 18-20  (17:20)
+      chain : col  22     (21)
+      resseq: cols 23-26  (22:26)
+      icode : col  27     (26)
+    Returns: (chain, resseq_int, icode, resname)
+    """
+    resname = line[17:20].strip()
+    chain = line[21].strip() or " "          # keep blank chain as " "
+    resseq_str = line[22:26].strip()
+    icode = line[26].strip() or " "          # insertion code
+    # resseq should be integer in Rosetta outputs; if not, this will raise (good to know)
+    resseq = int(resseq_str)
+    return (chain, resseq, icode, resname)
+
+
+def parse_protein_blocks_fixed(pdb_path):
     """
     Returns:
-      res_blocks: dict[int] -> list[str]  # ATOM lines grouped by resseq
-      prefix_lines: list[str]             # non-ATOM lines before first ATOM
-      nonatom_lines: list[str]            # non-ATOM lines after first ATOM (HETATM, REMARK, footer, TER, END, etc.)
-    Assumes single chain and uses resseq = int(line.split()[5]).
+      blocks: dict[(chain, resseq, icode)] -> list[str ATOM lines]
+      prefix_lines: list[str]     # lines before first ATOM
+      nonatom_lines: list[str]    # lines after first ATOM that are not protein ATOM
     """
-    res_blocks = {}
+    blocks = {}
     prefix_lines = []
     nonatom_lines = []
 
     saw_atom = False
-    cur_resseq = None
+    cur_key = None
     cur_lines = []
 
     with open(pdb_path, "r") as fh:
         for line in fh:
             if line.startswith("ATOM"):
                 saw_atom = True
-                resseq = int(line.split()[5])
+                key = resid_key_from_atom_line(line)[:3]  # (chain, resseq, icode)
 
-                if cur_resseq is None:
-                    cur_resseq = resseq
+                if cur_key is None:
+                    cur_key = key
                     cur_lines = [line]
-                elif resseq == cur_resseq:
+                elif key == cur_key:
                     cur_lines.append(line)
                 else:
-                    # finalize previous residue
-                    res_blocks[cur_resseq] = cur_lines
-                    # start new residue
-                    cur_resseq = resseq
+                    blocks[cur_key] = cur_lines
+                    cur_key = key
                     cur_lines = [line]
             else:
                 if not saw_atom:
@@ -49,15 +64,21 @@ def parse_protein_residue_blocks(pdb_path):
                 else:
                     nonatom_lines.append(line)
 
-        # finalize last residue at EOF
-        if cur_resseq is not None and cur_lines:
-            res_blocks[cur_resseq] = cur_lines
+        # finalize last residue at EOF no matter what came after
+        if cur_key is not None and cur_lines:
+            blocks[cur_key] = cur_lines
 
-    return res_blocks, prefix_lines, nonatom_lines
+    return blocks, prefix_lines, nonatom_lines
 
 
 # Parse skeleton once
-skeleton_blocks, skeleton_prefix, skeleton_nonatom = parse_protein_residue_blocks("skeleton.pdb")
+skeleton_blocks, skeleton_prefix, skeleton_nonatom = parse_protein_blocks_fixed("skeleton.pdb")
+
+
+def sort_reskeys(keys):
+    # keys are (chain, resseq, icode)
+    # single-chain => chain constant, but this is stable anyway
+    return sorted(keys, key=lambda k: (k[0], k[1], k[2]))
 
 
 for r, d, f in os.walk(placements_location):
@@ -65,39 +86,46 @@ for r, d, f in os.walk(placements_location):
         if r == placements_location and file.endswith(".pdb") and file != "skeleton.pdb":
             print(file)
 
-            placement_blocks, placement_prefix, placement_nonatom = parse_protein_residue_blocks(file)
+            placement_blocks, placement_prefix, placement_nonatom = parse_protein_blocks_fixed(file)
 
-            # --- FIX: union of residue indices (handles terminal residues present only in placement) ---
-            all_resseqs_sorted = sorted(set(skeleton_blocks.keys()) | set(placement_blocks.keys()))
+            # DEBUG: detect if SER 376 appears in text but isn't parsed into ATOM blocks
+            # (This will quickly tell us whether the issue is parsing vs writing.)
+            with open(file, "r") as fh:
+                text_has_376 = any((" SER " in ln and ln.startswith("ATOM") and ln[22:26].strip() == "376") for ln in fh)
+
+            if text_has_376:
+                key_376 = ("A", 376, " ")  # adjust if your chain is blank; see below
+                # If your chain is blank in PDB, key should be (" ", 376, " ")
+                if key_376 not in placement_blocks and (" ", 376, " ") in placement_blocks:
+                    key_376 = (" ", 376, " ")
+
+                if key_376 not in placement_blocks:
+                    tail = sort_reskeys(placement_blocks.keys())[-10:]
+                    print(f"WARNING: file contains ATOM SER 376 lines, but parser did not capture residue 376 as a block.")
+                    print(f"Last 10 parsed residue keys: {tail}")
+
+            # --- FIX: union of residue keys (handles residues present only in placement or only in skeleton) ---
+            all_keys_sorted = sort_reskeys(set(skeleton_blocks.keys()) | set(placement_blocks.keys()))
 
             out_path = "temp.pdb"
             with open(out_path, "w") as out:
-
-                # Write header/prefix from placement (keeps remarks at top if any)
+                # Keep placement prefix/header (so your remarks/comments at top survive)
                 for line in placement_prefix:
                     out.write(line)
 
-                # Write full protein in order: placement overrides skeleton
-                for resseq in all_resseqs_sorted:
-                    if resseq in placement_blocks:
-                        for line in placement_blocks[resseq]:
-                            out.write(line)
-                    elif resseq in skeleton_blocks:
-                        for line in skeleton_blocks[resseq]:
-                            out.write(line)
+                # Protein: placement overrides skeleton
+                for key in all_keys_sorted:
+                    if key in placement_blocks:
+                        out.writelines(placement_blocks[key])
                     else:
-                        # Shouldn't happen because we're iterating the union
-                        pass
+                        out.writelines(skeleton_blocks[key])
 
-                # Write the non-ATOM lines from placement (ligand + footer + END, etc.)
-                # (This preserves your ligand and any comment block.)
-                for line in placement_nonatom:
-                    out.write(line)
+                # Then write the rest of the placement file (ligand HETATM + footer/comments/END/etc.)
+                out.writelines(placement_nonatom)
 
             os.system(f"mv {out_path} {file}")
 
 
-# recompress and clean up
 os.chdir(working_location)
 os.system("tar -czf placements.tar.gz placements")
 os.system("rm -drf placements")
