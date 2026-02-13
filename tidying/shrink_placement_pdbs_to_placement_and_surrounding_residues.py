@@ -184,6 +184,8 @@ for r,d,f in os.walk(placements_location):
 
 				#divide the residue com sums by the number of atoms to get a usable average
 				res_com[0] = res_com[0] / nheavy_atoms
+				res_com[1] = res_com[1] / nheavy_atoms
+				res_com[2] = res_com[2] / nheavy_atoms
 
 				shortest_distance = 100
 
@@ -246,7 +248,7 @@ for r,d,f in os.walk(placements_location):
 			write_file.close()
 
 			#overwrite the original with the trimmed with the exact same name
-			os.system("mv temp " + file)
+			os.system("mv temp.pdb " + file)
 
 #now, all files should be processed, recompress
 #move back up to the level where the old compressed palcements file is
