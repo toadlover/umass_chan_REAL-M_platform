@@ -60,7 +60,7 @@ for line in ref_file.readlines():
 			cur_pair[1] = atom_res_code
 
 		#if the current atom is in the current residue, add it to the reference residue atoms
-		if cur_res == atom_res_index:
+		if cur_pair[0] == atom_res_index:
 			ref_res_atoms.append(atom_xyz)
 		#otherwise, if there is a mismatch, we hit the end of the residue and should derive the center of mass
 		else:
