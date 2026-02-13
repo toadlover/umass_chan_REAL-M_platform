@@ -38,7 +38,7 @@ ref_res_com = {}
 
 #have a working list of atom coordinates that builds as we find residue atoms
 ref_res_atoms = []
-cur_pair = ["",""]
+cur_pair = ("","")
 
 for line in ref_file.readlines():
 	#if it is an ATOM line, we have something to work with
@@ -56,8 +56,9 @@ for line in ref_file.readlines():
 
 		#if starting with the first atom, change the current residue to the residue we just hit
 		if cur_pair[0] == "" and cur_pair[1] == "":
-			cur_pair[0] = atom_res_index
-			cur_pair[1] = atom_res_code
+			#cur_pair[0] = atom_res_index
+			#cur_pair[1] = atom_res_code
+			cur_pair = (atom_res_index,atom_res_code)
 
 		#if the current atom is in the current residue, add it to the reference residue atoms
 		if cur_pair[0] == atom_res_index:
@@ -78,8 +79,9 @@ for line in ref_file.readlines():
 			ref_res_com[cur_pair] = [x_sum / len(ref_res_atoms), y_sum / len(ref_res_atoms), z_sum / len(ref_res_atoms)]
 
 			#now, set new cur_pair values since we are moving on and reset the ref_res_atoms list for the new residue
-			cur_pair[0] = atom_res_index
-			cur_pair[1] = atom_res_code
+			#cur_pair[0] = atom_res_index
+			#cur_pair[1] = atom_res_code
+			cur_pair = (atom_res_index,atom_res_code)
 
 			ref_res_atoms = []
 			ref_res_atoms.append(atom_xyz)
