@@ -40,7 +40,7 @@ ref_res_com = {}
 ref_res_atoms = []
 cur_pair = ["",""]
 
-for line in read_file.readlines():
+for line in ref_file.readlines():
 	#if it is an ATOM line, we have something to work with
 	if line.startswith("ATOM"):
 		#if the atom is a hydrogen, skip (last character in line is H)
