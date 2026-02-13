@@ -230,7 +230,7 @@ for r,d,f in os.walk(placements_location):
 			
 
 			#finally, go back over the buffered file, and when ew get to ATOM lines, determine whether or not to keep the residue based on if the residue is in the res_to_keep
-			write_file = ("temp.pdb", "w")
+			write_file = open("temp.pdb", "w")
 
 			for line in file_lines:
 				#if the line does not start with ATOM, write
