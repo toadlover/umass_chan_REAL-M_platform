@@ -104,6 +104,8 @@ for line in ref_file.readlines():
 		ref_res_atoms = []		
 
 
+#make a dictionary similar to prot_res that will be made, but in global scope that will make a skeleton of residues that do not move at least once, so rosetta palcements can be completely rebuilt
+skeleton_res = {}
 
 
 #iterate over the directory and look for placement pdb files
@@ -210,6 +212,12 @@ for r,d,f in os.walk(placements_location):
 					print(shortest_distance, res, residue_code)
 					res_to_keep.append(res)
 					continue
+				else:
+					#if the residue was close enough to the reference, try to add its data to the skeleton if the residue index is not present
+					#keep regardless of proximity to the ligand
+					#remember, the data here is a list of file lines for easy writing later
+					if res not in skeleton_res.keys():
+						skeleton_res[res] = prot_res[res]
 
 				
 				#look for residues within 5 angstroms to keep
@@ -254,13 +262,24 @@ for r,d,f in os.walk(placements_location):
 			#overwrite the original with the trimmed with the exact same name
 			os.system("mv temp.pdb " + file)
 
+#finally, write a file of the receptor skeleton containing data on residues that did not move at least once that is indexed with rosetta residue indexing with atoms in reference coordinates
+skeleton_file = open("skeleton.pdb","w")
+for res in skeleton_res.keys():
+	for line in res:
+		skeleton_file.write(line)
+
+#cap iff file with ter and end
+skeleton_file.write("TER\nEND\n")
+skeleton_file.close()
+
 #now, all files should be processed, recompress
 #move back up to the level where the old compressed palcements file is
 os.chdir(working_location)
 
 os.system("tar -czf placements.tar.gz placements")
 
-
+#remove the palcements_directory
+os.system("rm -drf placements")
 
 
 
