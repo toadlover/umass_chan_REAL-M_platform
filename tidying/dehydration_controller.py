@@ -30,7 +30,7 @@ for r,d,f in os.walk(cleaner_root):
 					cmd = cmd + reference_pdb + " "
 
 					#root location where the complete placements file is
-					cmd = cmd + cleaner_root + " "
+					cmd = cmd + r + " "
 
 
 
