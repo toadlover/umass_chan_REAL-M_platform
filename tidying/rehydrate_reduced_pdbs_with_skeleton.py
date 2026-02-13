@@ -71,7 +71,7 @@ for line in ref_file.readlines():
 #now, go through every pdb (besides the skeleton) and rehydrate
 for r,d,f in os.walk(placements_location):
 	for file in f:
-		if r == placements_location and file != "skeleton.pdb":
+		if r == placements_location and file != "skeleton.pdb" and file.endswith(".pdb"):
 			#pull its data the same as we did the skeleton
 
 			read_file = open(file, "r")
