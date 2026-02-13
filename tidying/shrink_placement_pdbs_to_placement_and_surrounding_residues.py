@@ -111,7 +111,7 @@ for r,d,f in os.walk(placements_location):
 	#iterate over each pdb file
 	for file in f:
 		#only work on files in the placements location
-		if r == placements_location:
+		if r == placements_location and file.endswith(".pdb"):
 
 			print(file)
 
