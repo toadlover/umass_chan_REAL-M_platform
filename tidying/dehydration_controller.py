@@ -23,4 +23,34 @@ for r,d,f in os.walk(cleaner_root):
 					#run it in a lsf job and throttle
 					print(r + "/raw_scores.csv " + r + "/placements.tar.gz")
 
-					
+					#try to fire off a lsf job to run the dehydrator
+					cmd = "bsub -q short -W 1:00 -u \"\" -R \"rusage[mem=5000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/tidying/dehydration_controller.py "
+
+					#root location where the complete placements file is
+					cmd = cmd + reference_pdb + " "
+
+					#reference pdb
+					cmd = cmd + reference_pdb + " "
+
+					#cap off
+					cmd = cmd + "\""
+
+					print(cmd)
+					os.system(cmd)
+
+					#adding 500 job throttle
+					#bsub job throttle to make sure we do not exceed our local limit
+					#write the length of the bjobs queue to this current location
+					os.system("bjobs | grep short |  wc -l > bjobs_length.txt")
+					job_count = 0
+					with open("bjobs_length.txt") as f:
+						job_count = int(f.read().strip())
+					while job_count > 1500:
+						#sleep for 1 second to not overburden the system
+						os.system("sleep 1")
+						os.system("bjobs | grep short| wc -l > bjobs_length.txt")
+						with open("bjobs_length.txt") as f:
+							job_count = int(f.read().strip())
+					#remove the length file to avoid clutter
+					os.system("rm bjobs_length.txt")			
+
