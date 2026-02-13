@@ -265,7 +265,7 @@ for r,d,f in os.walk(placements_location):
 #finally, write a file of the receptor skeleton containing data on residues that did not move at least once that is indexed with rosetta residue indexing with atoms in reference coordinates
 skeleton_file = open("skeleton.pdb","w")
 for res in skeleton_res.keys():
-	for line in res:
+	for line in skeleton_res[res]:
 		skeleton_file.write(line)
 
 #cap iff file with ter and end
