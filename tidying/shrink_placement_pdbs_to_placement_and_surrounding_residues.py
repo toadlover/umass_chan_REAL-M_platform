@@ -206,6 +206,8 @@ for r,d,f in os.walk(placements_location):
 
 				#if the shortest distance is greater than 0 (meaning that the residue moved any amount), add it to residues to keep and continue, skipping proximity keep
 				if shortest_distance > 0:
+					#debug print of the residue name/index and distance
+					print(shortest_distance, res, residue_code)
 					res_to_keep.append(res)
 					continue
 
