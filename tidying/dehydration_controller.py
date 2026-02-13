@@ -27,7 +27,7 @@ for r,d,f in os.walk(cleaner_root):
 					cmd = "bsub -q short -W 1:00 -u \"\" -R \"rusage[mem=5000]\" \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/tidying/dehydration_controller.py "
 
 					#root location where the complete placements file is
-					cmd = cmd + reference_pdb + " "
+					cmd = cmd + cleaner_root + " "
 
 					#reference pdb
 					cmd = cmd + reference_pdb + " "
