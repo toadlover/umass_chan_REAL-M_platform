@@ -10,6 +10,12 @@ cleaner_root = sys.argv[1]
 #take in the reference pdb to make a skeleton and remove residues per pdb that did not move significantly
 reference_pdb = sys.argv[2]
 
+throttle_limit = 100
+
+#optional argument for an override on the throttle limit
+if len(sys.argv) == 4:
+	throttle_limit = int(sys.argv[3])
+
 #move to and iterate down the cleaner root
 os.chdir(cleaner_root)
 
@@ -47,7 +53,7 @@ for r,d,f in os.walk(cleaner_root):
 					job_count = 0
 					with open("bjobs_length.txt") as f:
 						job_count = int(f.read().strip())
-					while job_count > 100:
+					while job_count > throttle_limit:
 						#sleep for 1 second to not overburden the system
 						os.system("sleep 1")
 						os.system("bjobs | grep short| wc -l > bjobs_length.txt")
