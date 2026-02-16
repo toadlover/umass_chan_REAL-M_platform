@@ -122,3 +122,6 @@ os.chdir("..")
 os.system("tar -czf placements.tar.gz placements")
 
 os.system("rm -drf placements")
+
+#run the dehydrate script to minimize overhead (until it is time to process the discovery results)
+os.system("python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/tidying/shrink_placement_pdbs_to_placement_and_surrounding_residues.py " + target_pdb)
