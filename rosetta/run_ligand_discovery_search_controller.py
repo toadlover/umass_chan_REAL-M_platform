@@ -110,7 +110,8 @@ for r,d,f in os.walk(discovery_directory_root):
 				if long_job_count < 1600:
 					queue = "long"
 
-				if long_job_count > 1600 and large_job_count < 900:
+				#changing from 900 to -1 so we don't try to use the large queue anymore
+				if long_job_count > 1600 and large_job_count < -1:
 					queue = "large"
 
 
@@ -132,7 +133,8 @@ for r,d,f in os.walk(discovery_directory_root):
 						queue = "long"
 						break
 
-					elif large_job_count < 900:
+					#changing from 900 to -1 so we don't try to use the large queue anymore
+					elif large_job_count < -1:
 						queue = "large"
 						break
 
