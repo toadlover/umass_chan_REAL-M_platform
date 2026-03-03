@@ -128,7 +128,7 @@ if motif_size_gb > scratch_gb * 0.25:
 # ---------------------------------------------------------------------
 # Submit LSF job array
 # ---------------------------------------------------------------------
-wrapper = Path("lsf_scratch_wrapper.sh").resolve()
+wrapper = Path("/pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/chris_hull_optimizations/lsf_scratch_wrapper.sh").resolve()
 
 if not wrapper.exists():
     print("ERROR: lsf_scratch_wrapper.sh not found.")
