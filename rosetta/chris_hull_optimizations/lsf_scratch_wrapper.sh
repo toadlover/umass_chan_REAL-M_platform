@@ -12,6 +12,8 @@ set -euo pipefail
 #   • Cleans up automatically on exit
 ###############################################################################
 
+#test print of the job index
+echo "LSB_JOBINDEX=$LSB_JOBINDEX"
 
 ###############################################################################
 # CONFIGURATION
