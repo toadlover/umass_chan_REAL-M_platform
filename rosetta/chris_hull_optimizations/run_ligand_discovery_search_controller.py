@@ -104,7 +104,7 @@ logs.mkdir(exist_ok=True)
 #   Minimum recommended scratch = max(5 GB, 2 × motif file size)
 # ---------------------------------------------------------------------
 
-scratch_gb = int(os.environ.get("SCRATCH_SIZE_GB", 10))
+scratch_gb = int(os.environ.get("SCRATCH_SIZE_GB", 20))
 tmp_mb = scratch_gb * 1024  # LSF expects MB
 
 motif_size_gb = motifs_file.stat().st_size / (1024**3)
@@ -139,6 +139,8 @@ bsub_cmd = (
     f"bsub "
     f"-J rosetta_ld[1-{num_jobs}] "
     f"-R \"rusage[tmp={tmp_mb}]\" "
+    f"-q long "
+    f"-W 48:00 "
     f"-o logs/%J_%I.out "
     f"-e logs/%J_%I.err "
 #    f"bash {wrapper} $(sed -n \"\\$LSB_JOBINDEX\"p " + starting_location + "/joblist.txt)"
