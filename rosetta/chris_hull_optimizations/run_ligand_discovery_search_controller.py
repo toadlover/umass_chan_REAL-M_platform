@@ -15,6 +15,7 @@ import sys
 from pathlib import Path
 import subprocess
 
+starting_location = os.getcwd()
 
 def run(cmd: str):
     """Run a shell command safely."""
@@ -45,7 +46,7 @@ extra_args_file = Path(sys.argv[8]) if len(sys.argv) >= 9 else None
 # ---------------------------------------------------------------------
 anchors = [a.strip() for a in anchor_list.split(",") if a.strip()]
 
-joblist_path = Path("joblist.txt")
+joblist_path = Path(starting_location + "/joblist.txt")
 with joblist_path.open("w") as f:
     for anchor in anchors:
         line = (
@@ -140,7 +141,7 @@ bsub_cmd = (
     f"-R \"rusage[tmp={tmp_mb}]\" "
     f"-o logs/%J_%I.out "
     f"-e logs/%J_%I.err "
-    f"bash {wrapper} $(sed -n \"$LSB_JOBINDEX\"p joblist.txt)"
+    f"bash {wrapper} $(sed -n \"$LSB_JOBINDEX\"p " + starting_location + "/joblist.txt)"
 )
 
 print("\nSubmitting LSF job array:")
