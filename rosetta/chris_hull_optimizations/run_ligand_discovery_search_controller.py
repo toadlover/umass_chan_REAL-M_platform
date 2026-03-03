@@ -70,7 +70,7 @@ with joblist_path.open("w") as f:
                 line += f" {extra_args_file}"
             f.write(line + "\n")
 
-num_jobs = len(anchors)
+num_jobs = len(anchors) * len(test_params_directories)
 print(f"Prepared job list with {num_jobs} jobs.")
 
 

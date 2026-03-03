@@ -203,7 +203,9 @@ run("python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platf
 # Copy final results back to submission directory
 ############################################################
 
-final_dest = Path.cwd()
+#final_dest = Path.cwd()
+final_dest = test_params_dir.parent / str(anchor)
+final_dest.mkdir(exist_ok=True)
 
 shutil.copy(SCRATCH_DIR / "placements.tar.gz", final_dest)
 
