@@ -52,6 +52,7 @@ if not scratch:
 SCRATCH_DIR = Path(scratch)
 SCRATCH_DIR.mkdir(parents=True, exist_ok=True)
 
+print("Operating out of directory: " + str(SCRATCH_DIR))
 
 ############################################################
 # Parse arguments
