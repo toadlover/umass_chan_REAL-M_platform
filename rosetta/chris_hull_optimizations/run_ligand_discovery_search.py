@@ -128,6 +128,16 @@ with args_path.open("w") as f:
 ############################################################
 # Run Rosetta inside Singularity
 ############################################################
+#sanity check of printing the arts to ensure successful mount
+run(
+    f"singularity exec "
+    f"--bind {local_params}:/input/test_params "
+    f"--bind {args_path}:/input/args "
+    f"--bind {local_pdb}:/input/{local_pdb.name} "
+    f"--bind {local_motifs}:/input/{local_motifs.name} "
+    f"/pi/summer.thyme-umw/enamine-REAL-2.6billion/rosetta_condensed_6_25_2024.sif "
+    f"cat /input/args"
+)
 
 run(
     f"singularity exec "
