@@ -70,8 +70,33 @@ trap cleanup EXIT
 ###############################################################################
 # RUN WORKER SCRIPT
 ###############################################################################
+JOBLIST="$1"
+
+if [ -z "$JOBLIST" ]; then
+    echo "ERROR: No joblist file passed."
+    exit 1
+fi
+
+if [ ! -f "$JOBLIST" ]; then
+    echo "ERROR: Joblist file not found: $JOBLIST"
+    exit 1
+fi
+
+echo "LSB_JOBINDEX = $LSB_JOBINDEX"
+echo "Using joblist: $JOBLIST"
+
+line="$(sed -n "${LSB_JOBINDEX}p" "$JOBLIST")"
+
+echo "Selected joblist line: $line"
+
+# Convert the line into args safely (simple version):
+set -- $line
+
 echo "Passed args:"
-echo "$@"
+printf '  [%s]\n' "$@"
+
+#echo "Passed args:"
+#echo "$@"
 
 export SCRATCH_DIR
 python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/chris_hull_optimizations/run_ligand_discovery_search.py "$@"

@@ -141,7 +141,8 @@ bsub_cmd = (
     f"-R \"rusage[tmp={tmp_mb}]\" "
     f"-o logs/%J_%I.out "
     f"-e logs/%J_%I.err "
-    f"bash {wrapper} $(sed -n \"\\$LSB_JOBINDEX\"p " + starting_location + "/joblist.txt)"
+#    f"bash {wrapper} $(sed -n \"\\$LSB_JOBINDEX\"p " + starting_location + "/joblist.txt)"
+    f"bash {wrapper} " + str(joblist_path)
 )
 
 print("\nSubmitting LSF job array:")
