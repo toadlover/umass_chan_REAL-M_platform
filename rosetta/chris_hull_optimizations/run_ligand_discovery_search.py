@@ -87,6 +87,7 @@ local_params = SCRATCH_DIR / "test_params"
 
 #test print of local_params residue_types
 print("test print of local_params residue_types file")
+os.system("ls " + str(local_params) + "/residue_types.txt")
 os.system("cat " + str(local_params) + "/residue_types.txt")
 
 shutil.copy(target_pdb, local_pdb)
