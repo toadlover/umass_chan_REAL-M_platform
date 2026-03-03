@@ -69,6 +69,13 @@ test_params_dir = Path(sys.argv[4])
 atr, rep, ddg = sys.argv[5:8]
 extra_args_file = Path(sys.argv[8]) if len(sys.argv) >= 9 else None
 
+############################################################
+# Prepare final destination and move to it
+############################################################
+
+final_dest = test_params_dir.parent / str(anchor)
+final_dest.mkdir(exist_ok=True)
+os.chdir(final_dest)
 
 ############################################################
 # Copy inputs into scratch
