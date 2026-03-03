@@ -28,7 +28,7 @@ def run(cmd: str):
 if len(sys.argv) < 8:
     print(
         "Usage: run_ligand_discovery_search_controller.py "
-        "<target_pdb> <anchor_list> <motifs_file> <test_params_dir> "
+        "<target_pdb> <anchor_list> <motifs_file> <discovery_root> "
         "<atr> <rep> <ddg> [extra_args_file]"
     )
     sys.exit(1)
@@ -36,10 +36,19 @@ if len(sys.argv) < 8:
 target_pdb = Path(sys.argv[1])
 anchor_list = sys.argv[2]        # e.g. "63,87,96,179"
 motifs_file = Path(sys.argv[3])
-test_params_dir = Path(sys.argv[4])
+discovery_root = Path(sys.argv[4])
 atr, rep, ddg = sys.argv[5:8]
 extra_args_file = Path(sys.argv[8]) if len(sys.argv) >= 9 else None
 
+
+#look down the discovery root for all test_params directories
+
+test_params_directories = []
+
+for r,d,f in os.walk(discovery_root):
+    for dire in d:
+        if dire == "test_params":
+            test_params_directories.append(r + "/" + dire + "/")
 
 # ---------------------------------------------------------------------
 # Build job list (one job per anchor residue)
@@ -48,17 +57,18 @@ anchors = [a.strip() for a in anchor_list.split(",") if a.strip()]
 
 joblist_path = Path(starting_location + "/joblist.txt")
 with joblist_path.open("w") as f:
-    for anchor in anchors:
-        line = (
-            f"{target_pdb} "
-            f"{anchor} "
-            f"{motifs_file} "
-            f"{test_params_dir} "
-            f"{atr} {rep} {ddg}"
-        )
-        if extra_args_file:
-            line += f" {extra_args_file}"
-        f.write(line + "\n")
+    for tp_dire in test_params_directories:
+        for anchor in anchors:
+            line = (
+                f"{target_pdb} "
+                f"{anchor} "
+                f"{motifs_file} "
+                f"{tp_dire} "
+                f"{atr} {rep} {ddg}"
+            )
+            if extra_args_file:
+                line += f" {extra_args_file}"
+            f.write(line + "\n")
 
 num_jobs = len(anchors)
 print(f"Prepared job list with {num_jobs} jobs.")
