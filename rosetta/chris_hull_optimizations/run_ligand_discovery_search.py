@@ -85,6 +85,10 @@ local_pdb = SCRATCH_DIR / target_pdb.name
 local_motifs = SCRATCH_DIR / motifs_file.name
 local_params = SCRATCH_DIR / "test_params"
 
+#test print of local_params residue_types
+print("test print of local_params residue_types file")
+os.system("cat " + str(local_params) + "/residue_types.txt")
+
 shutil.copy(target_pdb, local_pdb)
 shutil.copy(motifs_file, local_motifs)
 copytree(test_params_dir, local_params)
