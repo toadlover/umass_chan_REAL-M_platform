@@ -194,10 +194,16 @@ for pdb in SCRATCH_DIR.glob("*.pdb"):
     newname = placements / f"res{anchor}_{pdb.name}"
     pdb.rename(newname)
 
+#move into placements
+os.chdir("placements")
+
 # Score placements
 run(
     "python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/rosetta/score_placed_ligands_with_filtering.py",
 )
+
+#move back up
+os.chdir("..")
 
 # Copy CSVs up one level
 for csv in placements.glob("*.csv"):
