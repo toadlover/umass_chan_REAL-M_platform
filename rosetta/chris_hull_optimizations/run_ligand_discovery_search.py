@@ -65,7 +65,7 @@ if len(sys.argv) < 8:
 target_pdb = Path(sys.argv[1])
 anchor = sys.argv[2]
 motifs_file = Path(sys.argv[3])
-test_params_dir = Path(sys.argv[4])
+test_params_dir = Path(sys.argv[4] + "/test_params/")
 atr, rep, ddg = sys.argv[5:8]
 extra_args_file = Path(sys.argv[8]) if len(sys.argv) >= 9 else None
 
