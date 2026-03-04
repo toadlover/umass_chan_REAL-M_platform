@@ -85,15 +85,15 @@ for line in summary_file.readlines():
 
 	#now, run the prepare script in bsub
 	#/pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform
-	cmd = "bsub -q short -W 1:00 -u \"\" -R \"rusage[mem=4000]\" -o log.out -e log.err  \"python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/discovery_test_params_preparation/prepare_refined_test_params_directories_from_placement_scores_list.py "
+	cmd = "bsub -q short -W 1:00 -u \"\" -R \"rusage[mem=4000]\" -o log.out -e log.err  \'python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/discovery_test_params_preparation/prepare_refined_test_params_directories_from_placement_scores_list.py "
 	#target pdb
-	cmd = cmd + "\'" + smiles_string + "\' "
+	cmd = cmd + "\"" + smiles_string + "\" "
 	#anchor residue
 	cmd = cmd + str(ligand_name) + " "
 	#motifs file
-	cmd = cmd + "\'" + license_key + "\' "
+	cmd = cmd + "\"" + license_key + "\" "
 	#cap off
-	cmd = cmd + "\""
+	cmd = cmd + "\'"
 
 	print(cmd)
 	os.system(cmd)
