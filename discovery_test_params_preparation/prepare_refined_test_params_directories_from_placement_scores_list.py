@@ -63,7 +63,7 @@ os.system("obabel -isdf " + lig_name + "_confs.sdf -O " + lig_name + ".sdf -m")
 for r,d,f in os.walk(os.getcwd()):
 	for file in f:
 		#if it is a ligand conformer sdf
-		if cur_lig in file and file.endswith(".sdf") and file.endswith("_confs.sdf") == False:
+		if lig_name in file and file.endswith(".sdf") and file.endswith("_confs.sdf") == False:
 			#run molfile to params
 			#make a params file of the unique file
 			os.system("singularity exec /pi/summer.thyme-umw/enamine-REAL-2.6billion/conformator_container.sif python /conformator_for_container/molfile_to_params.py " + file + " -n " + file.split(".sdf")[0] + " --keep-names --long-names --clobber --no-pdb")
