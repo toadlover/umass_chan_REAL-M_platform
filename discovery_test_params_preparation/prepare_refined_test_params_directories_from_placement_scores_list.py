@@ -57,7 +57,7 @@ else:
 	os.system("singularity exec /pi/summer.thyme-umw/enamine-REAL-2.6billion/conformator_container.sif /conformator_for_container/conformator_1.2.1/conformator -i " + lig_name + ".smi  -o " + lig_name + "_confs.sdf --keep3d --hydrogens -v 0")
 
 #use obabel to split the conformers file into individual conformer files
-os.system("obabel -isdf " + lig_name + "_confs.sdf -O " + lig_name + ".sdf -m")
+os.system("obabel -isdf " + lig_name + "_confs.sdf -O " + lig_name + "_.sdf -m")
 
 #make a params file of each generated single params file
 for r,d,f in os.walk(os.getcwd()):
