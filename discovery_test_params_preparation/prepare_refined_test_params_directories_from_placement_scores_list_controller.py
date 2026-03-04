@@ -63,7 +63,7 @@ for line in summary_file.readlines():
 	os.chdir(str(dir_counter) + "/" + ligand_name)
 
 	#now that we know the file info, extract the placement
-	os.system("tar -xzf " + compressed_placements_path + " placements/" + placement_file + " --strip-components=1 -C .")
+	os.system("tar -xzf " + compressed_placements_path + "/placements.tar.gz placements/" + placement_file + " --strip-components=1 -C .")
 
 	#we have the file, extract the ligand
 	os.system("grep HETATM " + placement_file + " > ligand.pdb")
