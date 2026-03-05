@@ -55,59 +55,20 @@ for r,d,f in os.walk(discovery_root):
 # ---------------------------------------------------------------------
 anchors = [a.strip() for a in anchor_list.split(",") if a.strip()]
 
-#make a list that holds all job lists by name and their corresponding lengths
-#this way, we can handle larger directory clusters where we would exceed the umass hpc array job size limit of 10,000 jobs (safely cap individual arrays at 8,000)
-all_joblist_list = []
-#count the number of jobs in the joblist
-joblist_job_counter = 0
-#count the number of joblist files
-joblist_file_counter = 0
-
-#working joblist file name
-working_joblist_file = "joblist_" + str(joblist_file_counter) + ".txt"
-
-joblist_path = Path(starting_location + "/" + working_joblist_file)
-#with joblist_path.open("w") as f:
-
-f = joblist_path.open("w")
-
-for tp_dire in test_params_directories:
-    for anchor in anchors:
-        line = (
-            f"{target_pdb} "
-            f"{anchor} "
-            f"{motifs_file} "
-            f"{tp_dire} "
-            f"{atr} {rep} {ddg}"
-        )
-        if extra_args_file:
-            line += f" {extra_args_file}"
-        f.write(line + "\n")
-
-        joblist_job_counter = joblist_job_counter + 1
-
-        #if capping the limit of 8,000
-        if joblist_job_counter == 8000:
-
-            #append the file and count to the list
-            all_joblist_list.append([joblist_path,joblist_job_counter])
-
-            #change the working joblist file name and full path
-            joblist_file_counter = joblist_file_counter + 1
-            working_joblist_file = "joblist_" + str(joblist_file_counter) + ".txt"
-            joblist_path = Path(starting_location + "/" + working_joblist_file)
-
-            #reset the job counter
-            joblist_job_counter = 0
-
-            #open a new write stream to keep going in a new file
-            f.close()
-            f = joblist_path.open("w")
-
-#handle the final dangling job if there are any remaining jobs (which there likely are and this handles if we never hit the cap)
-if joblist_job_counter > 0:
-    f.close()
-    all_joblist_list.append([joblist_path,joblist_job_counter])
+joblist_path = Path(starting_location + "/joblist.txt")
+with joblist_path.open("w") as f:
+    for tp_dire in test_params_directories:
+        for anchor in anchors:
+            line = (
+                f"{target_pdb} "
+                f"{anchor} "
+                f"{motifs_file} "
+                f"{tp_dire} "
+                f"{atr} {rep} {ddg}"
+            )
+            if extra_args_file:
+                line += f" {extra_args_file}"
+            f.write(line + "\n")
 
 num_jobs = len(anchors) * len(test_params_directories)
 print(f"Prepared job list with {num_jobs} jobs.")
@@ -184,22 +145,20 @@ if not wrapper.exists():
     print("ERROR: lsf_scratch_wrapper.sh not found.")
     sys.exit(1)
 
-#iterate over every job list
-for joblist in all_joblist_list:
-    bsub_cmd = (
-        f"bsub "
-        f"-J rosetta_ld[1-{joblist[1]}] "
-        f"-R \"rusage[mem=10000,tmp={tmp_mb}]\" "
-        f"-q long "
-        f"-W 96:00 "
-        f"-o logs/%J_%I.out "
-        f"-e logs/%J_%I.err "
-    #    f"bash {wrapper} $(sed -n \"\\$LSB_JOBINDEX\"p " + starting_location + "/joblist.txt)"
-        f"bash {wrapper} " + str(joblist[0])
-    )
+bsub_cmd = (
+    f"bsub "
+    f"-J rosetta_ld[1-{num_jobs}] "
+    f"-R \"rusage[mem=10000,tmp={tmp_mb}]\" "
+    f"-q long "
+    f"-W 96:00 "
+    f"-o logs/%J_%I.out "
+    f"-e logs/%J_%I.err "
+#    f"bash {wrapper} $(sed -n \"\\$LSB_JOBINDEX\"p " + starting_location + "/joblist.txt)"
+    f"bash {wrapper} " + str(joblist_path)
+)
 
-    print("\nSubmitting LSF job array:")
-    print(bsub_cmd, "\n")
+print("\nSubmitting LSF job array:")
+print(bsub_cmd, "\n")
 
-    run(bsub_cmd)
+run(bsub_cmd)
 
