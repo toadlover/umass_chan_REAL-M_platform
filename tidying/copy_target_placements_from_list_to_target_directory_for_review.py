@@ -127,8 +127,8 @@ for line in read_list_file.readlines():
 		os.system("rm bjobs_length.txt")	
 
 		print(cmd)
-		try:
-			run(cmd, check=True)
+		#try:
+		run(cmd, check=True)
 
 		#move back up
 		os.chdir("..")
