@@ -19,7 +19,7 @@ if target_destination.endswith("/") == False:
 	target_destination = target_destination + "/"
 
 #make the target destination
-os.makedirs(target_destination, exists_ok=True)
+os.makedirs(target_destination, exist_ok=True)
 
 #move into the location
 os.chdir(target_destination)
@@ -28,7 +28,7 @@ os.chdir(target_destination)
 file_counter = 0
 dir_counter = 0
 
-os.makedirs(str(dir_counter), exists_ok=True)
+os.makedirs(str(dir_counter), exist_ok=True)
 #enter the directory
 os.chdir(str(dir_counter))
 
@@ -52,11 +52,11 @@ for line in read_list_file.readlines():
 		if file_counter % 100 == 0:
 			dir_counter = dir_counter + 1
 			os.chdir(target_destination)
-			os.makedirs(str(dir_counter), exists_ok=True)
+			os.makedirs(str(dir_counter), exist_ok=True)
 			os.chdir(str(dir_counter))
 
 		#make a directory to work with for extracting the file
-		os.makedirs(file_root, exists_ok=True)
+		os.makedirs(file_root, exist_ok=True)
 
 		#enter the directory
 		os.chdir(file_root)
