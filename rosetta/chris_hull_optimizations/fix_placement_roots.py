@@ -10,7 +10,7 @@ import os,sys
 all_scores_file = open("all_raw_scores.csv", "w")
 
 #write a header to the file (hardcoded)
-all_scores_file.write("file,ddg,total_motifs,significant_motifs,real_motif_ratio,hbond_motif_count,hbond_motif_energy_sum,closest_autodock_recovery_rmsd,closest_autodock_recovery_ddg,strain_energy,total")
+all_scores_file.write("file,ddg,total_motifs,significant_motifs,real_motif_ratio,hbond_motif_count,hbond_motif_energy_sum,closest_autodock_recovery_rmsd,closest_autodock_recovery_ddg,strain_energy,total\n")
 
 #record the starting location
 starting_dir = os.getcwd()
