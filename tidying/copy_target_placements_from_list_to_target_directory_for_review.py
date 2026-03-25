@@ -6,6 +6,7 @@
 #imports
 import os,sys
 from subprocess import run
+import shlex
 
 #arguments
 #the ligand list file
@@ -60,7 +61,7 @@ for line in read_list_file.readlines():
 
 		#enter the directory
 		os.chdir(file_root)
-
+		"""
 		#make a bsub job to handle this
 		#bsub parameters
 		cmd = ["bsub","-q","short","-W","2:00","-u","\"\"","-R","\"rusage[mem=5000]\""]
@@ -109,6 +110,24 @@ for line in read_list_file.readlines():
 
 		#end of command
 		cmd.extend(["\""])
+		"""
+
+		job_cmd = f"""
+		cp {shlex.quote(placements_file)} . &&
+		python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/tidying/rehydrate_reduced_pdbs_with_skeleton_gpt.py &&
+		tar -xzf placements.tar.gz --strip-components=1 {shlex.quote(f"placements/{file_root}.pdb")} &&
+		mv {shlex.quote(file_root + ".pdb")} .. &&
+		rm -rf placements*
+		"""
+
+		cmd = [
+			"bsub",
+			"-q", "short",
+			"-W", "2:00",
+			"-u", "",
+			"-R", "rusage[mem=5000]",
+			"bash", "-lc", job_cmd
+		]
 
 		#adding job throttle
 		#bsub job throttle to make sure we do not exceed our local limit
