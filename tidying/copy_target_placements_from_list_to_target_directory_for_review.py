@@ -117,7 +117,8 @@ for line in read_list_file.readlines():
 		python /pi/summer.thyme-umw/enamine-REAL-2.6billion/umass_chan_REAL-M_platform/tidying/rehydrate_reduced_pdbs_with_skeleton_gpt.py &&
 		tar -xzf placements.tar.gz --strip-components=1 {shlex.quote(f"placements/{file_root}.pdb")} &&
 		mv {shlex.quote(file_root + ".pdb")} .. &&
-		rm -rf placements*
+		rm -rf placements* &&
+		rm -drf ../{file_root}
 		"""
 
 		cmd = [
