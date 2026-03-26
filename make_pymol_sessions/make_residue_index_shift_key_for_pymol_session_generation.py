@@ -18,7 +18,7 @@ placement_file = sys.argv[2]
 pf_base = placement_file.split(".pdb")[0].split("/")[-1]
 
 #set a output key file name based on the names of the starting files
-out_file_name = sf_base + "_vs_" + pf_base "_key.csv"
+out_file_name = sf_base + "_vs_" + pf_base + "_key.csv"
 
 #optional, if the user wants a likely cleaner file name, they can input a 3rd arg (this can also be used to indicate outputting to a different path)
 if len(sys.argv) == 4:
