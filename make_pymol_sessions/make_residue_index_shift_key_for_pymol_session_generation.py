@@ -87,6 +87,7 @@ for line in sf_read.readlines():
 
 		#wipe the workign residue and start with the new atom
 		working_residue_list = []
+		working_residue_number = atom_res_index
 		working_residue_list.append([atom_res_name,atom_res_index,atom_x,atom_y,atom_z])
 
 #cap off the last atom from the starting file
@@ -165,11 +166,13 @@ for line in pf_read.readlines():
 		#skip if the index is -1
 		if closest_residue_match[1] != -1:
 			#key_file.write("res_type," + str(sf_base) + "," + str(pf_base) + ",delta\n")
+			print("WRITING", prior_name, prior_index, "matched_to", closest_residue_match)
 			key_file.write(str(closest_residue_match[0]) + "," + str(closest_residue_match[1]) + "," + str(prior_index) + "," + str(prior_index - closest_residue_match[1]) + "\n")
 
 
 		#wipe the workign residue and start with the new atom
 		working_residue_list = []
+		working_residue_number = atom_res_index
 		working_residue_list.append([atom_res_name,atom_res_index,atom_x,atom_y,atom_z])
 
 #handle the final residue
@@ -205,4 +208,5 @@ for res in sf_residues_list:
 #skip if the index is -1
 if closest_residue_match[1] != -1:
 	#key_file.write("res_type," + str(sf_base) + "," + str(pf_base) + ",delta\n")
+	print("WRITING", prior_name, prior_index, "matched_to", closest_residue_match)
 	key_file.write(str(closest_residue_match[0]) + "," + str(closest_residue_match[1]) + "," + str(prior_index) + "," + str(prior_index - closest_residue_match[1]) + "\n")
