@@ -165,7 +165,7 @@ for line in pf_read.readlines():
 		#skip if the index is -1
 		if closest_residue_match[1] != -1:
 			#key_file.write("res_type," + str(sf_base) + "," + str(pf_base) + ",delta\n")
-			key_file.write(str(closest_residue_match[0]) + "," + str(closest_residue_match[1]) + "," + str(prior_index) + "," + str(prior_index - closest_residue_match) + "\n")
+			key_file.write(str(closest_residue_match[0]) + "," + str(closest_residue_match[1]) + "," + str(prior_index) + "," + str(prior_index - closest_residue_match[1]) + "\n")
 
 
 		#wipe the workign residue and start with the new atom
@@ -205,4 +205,4 @@ for res in sf_residues_list:
 #skip if the index is -1
 if closest_residue_match[1] != -1:
 	#key_file.write("res_type," + str(sf_base) + "," + str(pf_base) + ",delta\n")
-	key_file.write(str(closest_residue_match[0]) + "," + str(closest_residue_match[1]) + "," + str(prior_index) + "," + str(prior_index - closest_residue_match) + "\n")
+	key_file.write(str(closest_residue_match[0]) + "," + str(closest_residue_match[1]) + "," + str(prior_index) + "," + str(prior_index - closest_residue_match[1]) + "\n")
