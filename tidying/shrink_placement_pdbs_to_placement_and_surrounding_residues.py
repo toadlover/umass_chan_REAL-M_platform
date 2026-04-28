@@ -48,11 +48,11 @@ for line in ref_file.readlines():
 			continue
 
 		#get atom xyz
-		atom_xyz = [float(line.split()[6]),float(line.split()[7]),float(line.split()[8])]
+		atom_xyz = [float(line[30:38]),float(line[38:46]),float(line[46:54])]
 
 		#get atom residue index and code
-		atom_res_index = line.split()[5]
-		atom_res_code = line.split()[3]
+		atom_res_index = int(line[22:26])
+		atom_res_code = line[17:20]
 
 		#if starting with the first atom, change the current residue to the residue we just hit
 		if cur_pair[0] == "" and cur_pair[1] == "":
@@ -151,7 +151,7 @@ for r,d,f in os.walk(placements_location):
 				if line.startswith("ATOM"):
 					#add it to the protein residue dictionary
 					#check if this is aready in the dicitonary or not and make a new list at the key if it does not exist already
-					resnum = line.split()[5]
+					resnum = line[22:26]
 					if resnum not in prot_res.keys():
 						prot_res[resnum] = []
 
@@ -160,7 +160,7 @@ for r,d,f in os.walk(placements_location):
 				#if a hetatm (ligand) take the coordinates and add to the list
 				if line.startswith("HETATM"):
 					#append the x,y,z coords to lig_res_Atoms
-					lig_res_atoms.append([float(line.split()[6]),float(line.split()[7]),float(line.split()[8])])
+					lig_res_atoms.append([float(line[30:38]),float(line[38:46]),float(line[46:54])])
 
 			#we have now buffered in the file, determine which residues to keep based on distance
 			#list of residues to keep by index
@@ -180,13 +180,17 @@ for r,d,f in os.walk(placements_location):
 						continue
 
 					#extract the residue atom coordinates to add to the res com
-					res_com[0] = res_com[0] + float(res_atom.split()[6])
-					res_com[1] = res_com[1] + float(res_atom.split()[7])
-					res_com[2] = res_com[2] + float(res_atom.split()[8])
+					#res_com[0] = res_com[0] + float(res_atom.split()[6])
+					#res_com[1] = res_com[1] + float(res_atom.split()[7])
+					#res_com[2] = res_com[2] + float(res_atom.split()[8])
+
+					res_com[0] = res_com[0] + float(res_atom[30:38])
+					res_com[1] = res_com[1] + float(res_atom[38:46])
+					res_com[2] = res_com[2] + float(res_atom[46:54])
 					nheavy_atoms = nheavy_atoms + 1
 
 					if residue_code == "":
-						residue_code = res_atom.split()[3]
+						residue_code = res_atom[17:20]
 
 				#divide the residue com sums by the number of atoms to get a usable average
 				res_com[0] = res_com[0] / nheavy_atoms
@@ -227,9 +231,9 @@ for r,d,f in os.walk(placements_location):
 				#look for residues within 5 angstroms to keep
 				for res_atom in prot_res[res]:
 					#extract the residue atom coordinates
-					x = float(res_atom.split()[6])
-					y = float(res_atom.split()[7])
-					z = float(res_atom.split()[8])
+					x = float(res_atom[30:38])
+					y = float(res_atom[38:46])
+					z = float(res_atom[46:54])
 
 					#get the coordinate distance of the atom to each atom in the ligand
 					for lig_atom in lig_res_atoms:
@@ -256,7 +260,7 @@ for r,d,f in os.walk(placements_location):
 					write_file.write(line)
 				else:
 					#if it is a residue atom line, determine the residue index and determine whether we identified if it iwas close enough
-					if line.split()[5] in res_to_keep:
+					if int(line[22:26]) in res_to_keep:
 						write_file.write(line)
 
 			#close the read and write streams
