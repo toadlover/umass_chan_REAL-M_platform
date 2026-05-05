@@ -44,10 +44,10 @@ for r,d,f in os.walk(starting_dir):
 					good_data = line.split("/")[-1]
 
 					#write a fixed line based on the root (and add /placement/)
-					new_file.write(r + "/placement/" + good_data)
+					new_file.write(r + "/placements/" + good_data)
 
 					#also write to the all file
-					all_scores_file.write(r + "/placement/" + good_data)
+					all_scores_file.write(r + "/placements/" + good_data)
 
 				#non-tmp line (header or otherwise good data to not fix, just write)
 				else:
