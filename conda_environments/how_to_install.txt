@@ -1,0 +1,5 @@
+The REAL-M conda environment named "realm-env" can be built from the provided yaml file, "realm_env.yml".
+This environment contains built supporting packages for ligand file processing, including RDKit for SMILES extraction and openbabel for file type conversion.
+
+Install the conda environment using the following command:
+conda env create -f realm_env.yml
