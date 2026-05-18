@@ -44,9 +44,9 @@ for line in read_list_file.readlines():
 		#identify the file of interest and work on extracting it
 		full_file = line.split(",")[0]
 		#path to the tar placements file (placements should exist as compressed .tar.gz to save memory overhead)
-		placements_file = line.split("/placement/")[0] + "/placements.tar.gz"
+		placements_file = line.split("/placements/")[0] + "/placements.tar.gz"
 		#file root for folder naming for operations
-		file_root = line.split("/placement/")[1].split(".pdb")[0]
+		file_root = line.split("/placements/")[1].split(".pdb")[0]
 
 		#increment the file counter and make a new subdir for every 100
 		file_counter = file_counter + 1
