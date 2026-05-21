@@ -151,7 +151,7 @@ for r,d,f in os.walk(placements_location):
 				if line.startswith("ATOM"):
 					#add it to the protein residue dictionary
 					#check if this is aready in the dicitonary or not and make a new list at the key if it does not exist already
-					resnum = line[22:26]
+					resnum = int(line[22:26])
 					if resnum not in prot_res.keys():
 						prot_res[resnum] = []
 
