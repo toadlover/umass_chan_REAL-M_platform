@@ -113,6 +113,11 @@ if len(anchors) > 1:
                             #append the anchor to the list in the dictionary if it was not already present
                             secondary_discovery_ligands_with_anchors[this_ligand].append(anchor)
 
+    #test_print of the dictionary
+    for lig in secondary_discovery_ligands_with_anchors.keys():
+        print(lig, secondary_discovery_ligands_with_anchors[lig])
+
+
 f = joblist_path.open("w")
 
 for tp_dire in test_params_directories:
@@ -125,6 +130,7 @@ for tp_dire in test_params_directories:
             f"{atr} {rep} {ddg}"
         )
 
+        print(line)
         
         #skip the anchor if it is not in the secondary list, if there is info on the ligand anchor (for secondary discovery)
         if len(secondary_discovery_ligands_with_anchors) > 0:
@@ -133,9 +139,13 @@ for tp_dire in test_params_directories:
             #to account for where there may or may not be a trailing slash, split by /test_params first and then it is the first thing after teh last slash
             cur_lig = tp_dire.split("/test_params")[0].split("/")[-1]
 
+            print(cur_lig)
+
             if cur_lig in secondary_discovery_ligands_with_anchors.keys():
+                print(anchor,secondary_discovery_ligands_with_anchors[cur_lig])
                 if anchor not in secondary_discovery_ligands_with_anchors[cur_lig]:
                     #skip entry if the ligand is in the ligands list by we do not have a placement from it for the anchor
+                    print("Skipping",cur_lig,anchor,secondary_discovery_ligands_with_anchors[cur_lig])
                     continue
 
 
