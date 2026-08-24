@@ -117,12 +117,13 @@ with pymol2.PyMOL() as pymol:
                                 is_real = False
 
                             #determine the index of the residue and translate it to add to the motif list(s)
-                            index = line.split("Hbond_score")[1].split("_")[1][3:]
-
+                            index = line.split("Hbond_score")[1].split("_")[1][3:].strip("\n")
+                            print(index)
+#                            index = line.split("Hbond_score")[1].split("_")[2][3:]
                             #translate the index
                             if index in residue_index_dict.keys():
 
-                                translated_index = residue_index_dict[index]
+                                translated_index = residue_index_dict[index].strip("\n")
 
                                 all_motifs.append(translated_index)
 
@@ -131,6 +132,9 @@ with pymol2.PyMOL() as pymol:
                             else:
                                 #handling to not crash the program if we hit a residue not in the index dictionary key:
                                 print("Warning, index " + index + " not found in the translation key!")
+
+                print("all_motifs",all_motifs)
+                print("real_motifs",real_motifs)
 
                 #once done getting all motifs, make spheres on the residues in all_motifs, and then color the real motifs residues magenta
                 #make selection strings for use with pymol

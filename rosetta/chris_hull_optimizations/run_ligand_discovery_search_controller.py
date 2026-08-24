@@ -189,7 +189,7 @@ for joblist in all_joblist_list:
     bsub_cmd = (
         f"bsub "
         f"-J rosetta_ld[1-{joblist[1]}] "
-        f"-R \"rusage[mem=10000,tmp={tmp_mb}]\" "
+        f"-R \"rusage[mem=6000,tmp={tmp_mb}]\" "
         f"-q long "
         f"-W 96:00 "
         f"-o logs/%J_%I.out "
