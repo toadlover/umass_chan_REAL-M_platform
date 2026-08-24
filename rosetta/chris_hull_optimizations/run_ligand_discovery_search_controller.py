@@ -83,7 +83,7 @@ if len(anchors) > 1:
     #if no usable csv is found, all anchor residues will just implicitly be used instead
     for r,d,f in os.walk(discovery_root):
         for file in f:
-            if r == "discovery_root" and file.endswith(".csv"):
+            if r == discovery_root and file.endswith(".csv"):
                 #read the csv and extract all ligands with their corresponding anchor
                 placements_file = open(r + "/" + file, "r")
 
