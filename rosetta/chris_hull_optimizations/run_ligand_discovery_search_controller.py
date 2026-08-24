@@ -69,6 +69,50 @@ working_joblist_file = "joblist_" + str(joblist_file_counter) + ".txt"
 joblist_path = Path(starting_location + "/" + working_joblist_file)
 #with joblist_path.open("w") as f:
 
+#do an implicit check to see if there is a compiled raw scores file from round 1 discovery that is in the discovery root, which would have been used to create discovery directories fro round 2 discovery
+#the purpose of this is to be smartr about expanded conformer discovery
+#if there are multiple anchor residues being used, we only want to run expanded conformer discovery on the anchor(s) that led to placements in the expanded conformer set
+#this first step is to perform a possible read-in of the corresponding compiled raw scores csv if it is applicable
+#if we do want to do this, we will read in all ligands from the csv by name and pair them with the anchor that they are listed with
+secondary_discovery_ligands_with_anchors = {}
+#only even consider if there is more than one anchor, otherwise we implicitly will have all ligands only run expanded conformers on the single anchor anyway
+if len(anchors > 1):
+    #runthrough and see if there is a raw scores file in the directory
+    #makign this choice instead of adding another argument to not have to deal with changing the entire pipeline architecture
+    #if you are runnign secondary discovery, there should eb a raw scores file in the discovery space anyway, since it had to be used to make the test params directories
+    #if no usable csv is found, all anchor residues will just implicitly be used instead
+    for r,d,f in os.walk(discovery_root):
+        for file in f:
+            if r == "discovery_root" and file.endswith(".csv"):
+                #read the csv and extract all ligands with their corresponding anchor
+                placements_file = open(r + "/" + file, "r")
+
+                for line in placements_file.readlines():
+                    #primary filter to filter out potential bad lines, lines must have "res" and ".pdb" in the line, line.split(",") must also be at leat 7 entries
+                    if len(line.split(",")) < 7:
+                        continue
+                    if "/res" not in line and ".pdb," not in line:
+                        continue
+                    #derive the anchor and ligand name
+                    #anchor is derived between "/res" and the following udnerscore
+                    anchor = line.split("/res")[1].split("_")[0]
+                    #confirm that this is in the anchors list
+                    if anchor not in anchors:
+                        continue
+                    #next, derive the ligand, which should be the 3rd to last entry when splitting by underscores when first splitting by split(".pdb")[0]
+                    this_ligand = line.split(".pdb")[0].split("_")[-3]
+
+                    #pair the ligand and anchor
+                    #if the ligands is already listed, add the anchor
+                    if this_ligand not in secondary_discovery_ligands_with_anchors.keys():
+                        secondary_discovery_ligands_with_anchors[this_ligand] = [anchor]
+                    else:
+                        if anchor in secondary_discovery_ligands_with_anchors[this_ligand]:
+                            continue
+                        else:
+                            #append the anchor to the list in the dictionary if it was not already present
+                            secondary_discovery_ligands_with_anchors[this_ligand].append(anchor)
+
 f = joblist_path.open("w")
 
 for tp_dire in test_params_directories:
@@ -80,6 +124,21 @@ for tp_dire in test_params_directories:
             f"{tp_dire} "
             f"{atr} {rep} {ddg}"
         )
+
+        
+        #skip the anchor if it is not in the secondary list, if there is info on the ligand anchor (for secondary discovery)
+        if len(secondary_discovery_ligands_with_anchors) > 0:
+            #determine what the ligand here should be from the tp_dire
+            #ligand should be the 2nd to last entry when splitting by slashes
+            #to account for where there may or may not be a trailing slash, split by /test_params first and then it is the first thing after teh last slash
+            cur_lig = tp_dire.split("/test_params")[0].split("/")[-1]
+
+            if cur_lig in secondary_discovery_ligands_with_anchors.keys():
+                if anchor not in secondary_discovery_ligands_with_anchors[cur_lig]:
+                    #skip entry if the ligand is in the ligands list by we do not have a placement from it for the anchor
+                    continue
+
+
         if extra_args_file:
             line += f" {extra_args_file}"
         f.write(line + "\n")
