@@ -75,6 +75,9 @@ joblist_path = Path(starting_location + "/" + working_joblist_file)
 #this first step is to perform a possible read-in of the corresponding compiled raw scores csv if it is applicable
 #if we do want to do this, we will read in all ligands from the csv by name and pair them with the anchor that they are listed with
 secondary_discovery_ligands_with_anchors = {}
+
+print("#anchors",len(anchors))
+
 #only even consider if there is more than one anchor, otherwise we implicitly will have all ligands only run expanded conformers on the single anchor anyway
 if len(anchors) > 1:
     #runthrough and see if there is a raw scores file in the directory
@@ -85,6 +88,9 @@ if len(anchors) > 1:
         for file in f:
             if r == discovery_root and file.endswith(".csv"):
                 #read the csv and extract all ligands with their corresponding anchor
+
+                print("reading", r + "/" + file)
+
                 placements_file = open(r + "/" + file, "r")
 
                 for line in placements_file.readlines():
@@ -112,6 +118,8 @@ if len(anchors) > 1:
                         else:
                             #append the anchor to the list in the dictionary if it was not already present
                             secondary_discovery_ligands_with_anchors[this_ligand].append(anchor)
+
+    print("dict contents:")
 
     #test_print of the dictionary
     for lig in secondary_discovery_ligands_with_anchors.keys():
