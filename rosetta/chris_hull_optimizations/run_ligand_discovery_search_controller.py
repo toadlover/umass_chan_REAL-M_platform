@@ -76,7 +76,7 @@ joblist_path = Path(starting_location + "/" + working_joblist_file)
 #if we do want to do this, we will read in all ligands from the csv by name and pair them with the anchor that they are listed with
 secondary_discovery_ligands_with_anchors = {}
 #only even consider if there is more than one anchor, otherwise we implicitly will have all ligands only run expanded conformers on the single anchor anyway
-if len(anchors > 1):
+if len(anchors) > 1:
     #runthrough and see if there is a raw scores file in the directory
     #makign this choice instead of adding another argument to not have to deal with changing the entire pipeline architecture
     #if you are runnign secondary discovery, there should eb a raw scores file in the discovery space anyway, since it had to be used to make the test params directories
