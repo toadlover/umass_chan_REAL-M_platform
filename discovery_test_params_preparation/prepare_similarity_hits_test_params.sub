@@ -1,0 +1,148 @@
+#!/bin/bash
+
+# ============================================================
+# IMPORTANT
+#
+# Set the array range at submission time rather than hardcoding
+# it here.
+#
+# Example:
+#
+#   bsub -J "similarity_params[1-5000]%500" \
+#        < prepare_similarity_hits_test_params.sub
+#
+# ============================================================
+
+#BSUB -J similarity_params
+#BSUB -q short
+#BSUB -W 8:00
+#BSUB -n 1
+#BSUB -R "rusage[mem=4000]"
+#BSUB -oo /pi/summer.thyme-umw/enamine_90b_library/full_library_test/logs/test_params_%I.out
+#BSUB -eo /pi/summer.thyme-umw/enamine_90b_library/full_library_test/logs/test_params_%I.err
+
+set -euo pipefail
+
+
+# ============================================================
+# USER CONFIGURATION
+# ============================================================
+
+INPUT_CSV="/pi/summer.thyme-umw/enamine_90b_library/full_library_test/PV-000517439336_top_1m_pipeline.csv"
+
+OUTPUT_ROOT="/pi/summer.thyme-umw/enamine_90b_library/full_library_test/PV-000517439336_test_params"
+
+SCRIPT="/pi/summer.thyme-umw/enamine_90b_library/enamine-90b-smiles-similarity/top_compound_screening/prepare_similarity_hits_test_params.py"
+
+
+# ------------------------------------------------------------
+# Number of ligands each array element prepares sequentially.
+#
+# 1 gives maximum fault isolation/parallelism.
+# Increase this if you have more ligands than practical LSF
+# array indices.
+# ------------------------------------------------------------
+
+LIGANDS_PER_TASK=1
+
+
+# ------------------------------------------------------------
+# Preserve old organization:
+#
+#   0/ = hits 1-100
+#   1/ = hits 101-200
+#   ...
+# ------------------------------------------------------------
+
+LIGANDS_PER_DIRECTORY=100
+
+
+# ============================================================
+# SOFTWARE
+# ============================================================
+
+CONFORMATOR_CONTAINER="/pi/summer.thyme-umw/enamine-REAL-2.6billion/conformator_container.sif"
+
+CONFORMATOR_EXECUTABLE="/conformator_for_container/conformator_1.2.1/conformator"
+
+MOLFILE_TO_PARAMS="/conformator_for_container/molfile_to_params.py"
+
+
+# ============================================================
+# OPTIONAL CONFORMATOR LICENSE
+# ============================================================
+
+# Prefer exporting the license BEFORE submitting the job rather
+# than putting the secret in this file.
+#
+# Example:
+#
+# export CONFORMATOR_LICENSE='...'
+#
+# Then submit with whatever environment propagation your LSF
+# installation normally uses.
+#
+# The Python program reads:
+#
+#     $CONFORMATOR_LICENSE
+#
+# automatically.
+
+
+# ============================================================
+# Sanity checks
+# ============================================================
+
+if [[ ! -f "$INPUT_CSV" ]]; then
+    echo "ERROR: Input CSV does not exist:"
+    echo "  $INPUT_CSV"
+    exit 1
+fi
+
+if [[ ! -f "$SCRIPT" ]]; then
+    echo "ERROR: Python worker does not exist:"
+    echo "  $SCRIPT"
+    exit 1
+fi
+
+if [[ ! -f "$CONFORMATOR_CONTAINER" ]]; then
+    echo "ERROR: Conformator container does not exist:"
+    echo "  $CONFORMATOR_CONTAINER"
+    exit 1
+fi
+
+
+mkdir -p "$OUTPUT_ROOT"
+
+
+# ============================================================
+# Run task
+# ============================================================
+
+echo "============================================================"
+echo "Similarity-hit test_params preparation"
+echo "============================================================"
+echo "Job ID:            ${LSB_JOBID}"
+echo "Array index:       ${LSB_JOBINDEX}"
+echo "Host:              $(hostname)"
+echo "Ligands/task:      ${LIGANDS_PER_TASK}"
+echo "Input CSV:         ${INPUT_CSV}"
+echo "Output root:       ${OUTPUT_ROOT}"
+echo "============================================================"
+
+
+python "$SCRIPT" \
+    --input-csv "$INPUT_CSV" \
+    --output-root "$OUTPUT_ROOT" \
+    --task-index "$LSB_JOBINDEX" \
+    --ligands-per-task "$LIGANDS_PER_TASK" \
+    --ligands-per-directory "$LIGANDS_PER_DIRECTORY" \
+    --conformator-container "$CONFORMATOR_CONTAINER" \
+    --conformator-executable "$CONFORMATOR_EXECUTABLE" \
+    --molfile-to-params "$MOLFILE_TO_PARAMS"
+
+
+echo
+echo "============================================================"
+echo "Task ${LSB_JOBINDEX} completed successfully."
+echo "============================================================"
